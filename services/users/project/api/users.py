@@ -43,3 +43,8 @@ def add_user():
     except exc.IntegrityError as e:
         db.session.rollback()
         return jsonify(response_object), 400
+
+
+@users_blueprint.route('/users/<user_id>', methods=['GET'])
+def get_user():
+    pass
