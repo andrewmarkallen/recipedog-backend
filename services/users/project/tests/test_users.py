@@ -95,7 +95,8 @@ class TestUserService(BaseTestCase):
             data = json.loads(response.data.decode())
             self.assertEqual(response.status_code, 200)
             self.assertIn('marka', data['data']['username'])
-            self.assertIn('success', data['success'])
+            self.assertIn('marka@example.com', data['data']['email'])
+            self.assertIn('success', data['status'])
 
 
 if __name__ == '__main__':
