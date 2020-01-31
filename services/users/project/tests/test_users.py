@@ -130,8 +130,8 @@ class TestUserService(BaseTestCase):
             self.assertEqual(len(data['data']['users']), 2)
             self.assertIn('yunwoo', data['data']['users'][0]['username'])
             self.assertIn('yunwoo@yl.ee', data['data']['users'][0]['email'])
-            self.assertIn('king_marka', data['data']['users'][0]['username'])
-            self.assertIn('king@marka.com', data['data']['users'][0]['email'])
+            self.assertIn('king_marka', data['data']['users'][1]['username'])
+            self.assertIn('king@marka.com', data['data']['users'][1]['email'])
             self.assertIn('success', data['status'])
 
 if __name__ == '__main__':
