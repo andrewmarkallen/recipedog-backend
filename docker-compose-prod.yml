@@ -2,13 +2,22 @@ version : '3.4'
 
 services:
 
+  nginx:
+    container_name: nginx
+    build: ./services/nginx
+    restart: always
+    ports:
+      - 80:80
+    depends_on:
+      - users
+
   users:
     container_name: users
     build:
       context: ./services/users
       dockerfile: Dockerfile-prod
-    ports:
-      - 5001:5000
+    expose:
+      - '5000'
     environment:
       - FLASK_DEBUG=0
       - APP_SETTINGS=project.config.DevelopmentConfig
