@@ -138,14 +138,16 @@ class TestUserService(BaseTestCase):
             self.assertIn('success', data['status'])
 
     def test_main_no_users(self):
-        """Ensure the main route behaves correctly when no users have been added to the database."""
+        """Ensure the main route behaves correctly when no users have been"""
+        """added to the database."""
         response = self.client.get('/')
         self.assertEqual(response.status_code, 200)
         self.assertIn(b'<h1>All Users</h1>', response.data)
         self.assertIn(b'<p>No users!</p>', response.data)
 
     def test_main_with_users(self):
-        """Ensure the main route behaves correctly when users have been added to the database."""
+        """Ensure the main route behaves correctly when users have been """
+        """added to the database."""
         add_user('yunwoo', 'yunwoo@yl.ee')
         add_user('king_marka', 'king@marka.com')
         with self.client:
@@ -168,6 +170,7 @@ class TestUserService(BaseTestCase):
             self.assertIn(b'<h1>All Users</h1>', response.data)
             self.assertNotIn(b'<h1>No users!</h1>', response.data)
             self.assertIn(b'marka', response.data)
+
 
 if __name__ == '__main__':
     unittest.main()

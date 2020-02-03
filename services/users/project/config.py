@@ -12,10 +12,12 @@ class DevelopmentConfig(BaseConfig):
     """Development Configuration"""
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
 
+
 class TestingConfig(BaseConfig):
     """Testing Configuration"""
     TESTING = True
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_TEST_URL')
+
 
 class ProductionConfig(BaseConfig):
     """Production Configuration"""
