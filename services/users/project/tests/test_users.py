@@ -23,7 +23,8 @@ class TestUserService(BaseTestCase):
                 '/users',
                 data=json.dumps({
                     'username': 'marka',
-                    'email': 'marka@example.com'
+                    'email': 'marka@example.com',
+                    'password': 'sekrit'
                 }),
                 content_type='application/json'
             )
@@ -51,7 +52,10 @@ class TestUserService(BaseTestCase):
         with self.client:
             response = self.client.post(
                 '/users',
-                data=json.dumps({'email': 'marka@example.com'}),
+                data=json.dumps({
+                    'email': 'marka@example.com',
+                    'password': 'sekrit',
+                    }),
                 content_type='application/json',
             )
             data = json.loads(response.data.decode())
@@ -66,7 +70,8 @@ class TestUserService(BaseTestCase):
                 '/users',
                 data=json.dumps({
                     'username': 'marka',
-                    'email': 'marka@example.com'
+                    'email': 'marka@example.com',
+                    'password': 'sekrit'
                 }),
                 content_type='application/json'
             )
@@ -74,7 +79,8 @@ class TestUserService(BaseTestCase):
                 '/users',
                 data=json.dumps({
                     'username': 'marka',
-                    'email': 'marka@example.com'
+                    'email': 'marka@example.com',
+                    'password': 'sekrit'
                 }),
                 content_type='application/json'
             )
@@ -87,7 +93,7 @@ class TestUserService(BaseTestCase):
 
     def test_single_user(self):
         """Ensure get single user behaves correctly"""
-        user = add_user(username='marka', email='marka@example.com')
+        user = add_user('marka', 'marka@example.com', 'sekrit')
         with self.client:
             response = self.client.get(f'/users/{user.id}')
             data = json.loads(response.data.decode())
@@ -116,8 +122,8 @@ class TestUserService(BaseTestCase):
 
     def test_all_users(self):
         """Ensure get all users behaves correctly."""
-        add_user('yunwoo', 'yunwoo@yl.ee')
-        add_user('king_marka', 'king@marka.com')
+        add_user('yunwoo', 'yunwoo@yl.ee', 'sekrit')
+        add_user('king_marka', 'king@marka.com', 'sekrit')
         with self.client:
             response = self.client.get('/users')
             data = json.loads(response.data.decode())
@@ -140,8 +146,8 @@ class TestUserService(BaseTestCase):
     def test_main_with_users(self):
         """Ensure the main route behaves correctly when users have been """
         """added to the database."""
-        add_user('yunwoo', 'yunwoo@yl.ee')
-        add_user('king_marka', 'king@marka.com')
+        add_user('yunwoo', 'yunwoo@yl.ee', 'sekrit')
+        add_user('king_marka', 'king@marka.com', 'sekrit')
         with self.client:
             response = self.client.get('/')
             self.assertEqual(response.status_code, 200)
@@ -155,7 +161,11 @@ class TestUserService(BaseTestCase):
         with self.client:
             response = self.client.post(
                 '/',
-                data=dict(username='marka', email='marka@example.com'),
+                data=dict(
+                    username='marka',
+                    email='marka@example.com',
+                    password='sekrit',
+                    ),
                 follow_redirects=True
             )
             self.assertEqual(response.status_code, 200)
