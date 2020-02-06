@@ -12,7 +12,7 @@ class TestAuthBlueprint(BaseTestCase):
         with self.client:
             response = self.client.post(
                 '/auth/register',
-                date=json.dumps({
+                data=json.dumps({
                     'username': 'justatest',
                     'email': 'test@test.com',
                     'password': '123456',
@@ -31,7 +31,7 @@ class TestAuthBlueprint(BaseTestCase):
         with self.client:
             response = self.client.post(
                 '/auth/register',
-                date=json.dumps({
+                data=json.dumps({
                     'username': 'marka',
                     'email': 'test@test.com',
                     'password': '123456',
@@ -50,8 +50,8 @@ class TestAuthBlueprint(BaseTestCase):
         with self.client:
             response = self.client.post(
                 '/auth/register',
-                date=json.dumps({
-                    'username': 'justatest',
+                data=json.dumps({
+                    'username': 'test',
                     'email': 'test2@test.com',
                     'password': '123456',
                 }),
@@ -88,7 +88,7 @@ class TestAuthBlueprint(BaseTestCase):
             )
             data = json.loads(response.data.decode())
             self.assertEqual(response.status_code, 400)
-            self.assertEqual('Invalid payload', data['message'])
+            self.assertEqual('Invalid payload.', data['message'])
             self.assertIn('fail', data['status'])
 
     def test_user_registration_invalid_json_keys_no_email(self):
@@ -103,7 +103,7 @@ class TestAuthBlueprint(BaseTestCase):
             )
             data = json.loads(response.data.decode())
             self.assertEqual(response.status_code, 400)
-            self.assertEqual('Invalid payload', data['message'])
+            self.assertEqual('Invalid payload.', data['message'])
             self.assertIn('fail', data['status'])
 
     def test_user_registration_invalid_json_keys_no_password(self):
@@ -118,5 +118,5 @@ class TestAuthBlueprint(BaseTestCase):
             )
             data = json.loads(response.data.decode())
             self.assertEqual(response.status_code, 400)
-            self.assertEqual('Invalid payload', data['message'])
+            self.assertEqual('Invalid payload.', data['message'])
             self.assertIn('fail', data['status'])
