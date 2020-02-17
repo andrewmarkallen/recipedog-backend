@@ -1,0 +1,129 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NavBar renders a snapshot properly 1`] = `
+<nav
+  className="navbar navbar-inverse"
+>
+  <div
+    className="container"
+  >
+    <div
+      className="navbar-header"
+    >
+      <span
+        className="navbar-brand"
+      >
+        Hello, World!
+      </span>
+      <button
+        className="navbar-toggle collapsed"
+        onClick={[Function]}
+        type="button"
+      >
+        <span
+          className="sr-only"
+        >
+          Toggle navigation
+        </span>
+        <span
+          className="icon-bar"
+        />
+        <span
+          className="icon-bar"
+        />
+        <span
+          className="icon-bar"
+        />
+      </button>
+    </div>
+    <div
+      aria-expanded={null}
+      className="navbar-collapse collapse"
+    >
+      <ul
+        className="nav navbar-nav"
+        role={null}
+      >
+        <li
+          className="active"
+          role="presentation"
+          style={Object {}}
+        >
+          <a
+            href="/"
+            onClick={[Function]}
+            onKeyDown={[Function]}
+          >
+            Home
+          </a>
+        </li>
+        <li
+          className=""
+          role="presentation"
+        >
+          <a
+            href="/about"
+            onClick={[Function]}
+            onKeyDown={[Function]}
+          >
+            About
+          </a>
+        </li>
+        <li
+          className=""
+          role="presentation"
+        >
+          <a
+            href="/status"
+            onClick={[Function]}
+            onKeyDown={[Function]}
+          >
+            User Status
+          </a>
+        </li>
+      </ul>
+      <ul
+        className="nav navbar-nav navbar-right"
+        role={null}
+      >
+        <li
+          className=""
+          role="presentation"
+        >
+          <a
+            href="/register"
+            onClick={[Function]}
+            onKeyDown={[Function]}
+          >
+            Register
+          </a>
+        </li>
+        <li
+          className=""
+          role="presentation"
+        >
+          <a
+            href="/login"
+            onClick={[Function]}
+            onKeyDown={[Function]}
+          >
+            Log In
+          </a>
+        </li>
+        <li
+          className=""
+          role="presentation"
+        >
+          <a
+            href="/logout"
+            onClick={[Function]}
+            onKeyDown={[Function]}
+          >
+            Log Out
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+`;
