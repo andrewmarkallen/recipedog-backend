@@ -39,8 +39,8 @@ services:
       dockerfile: Dockerfile-dev
     volumes:
       - './services/users:/usr/src/app'
-    ports:
-      - 5001:5000
+    expose:
+      - '5000'
     environment:
       - FLASK_DEBUG=1
       - APP_SETTINGS=project.config.DevelopmentConfig
