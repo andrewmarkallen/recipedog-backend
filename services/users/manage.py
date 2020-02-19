@@ -1,9 +1,11 @@
 import unittest
 import coverage
+import datetime
 
 from flask.cli import FlaskGroup
 from project import create_app, db
 from project.api.models import User
+from project.api.models import Recipe
 
 COV = coverage.coverage(
     branch=True,
@@ -66,6 +68,14 @@ def seed_db():
             email='marka@example.com',
             password='sekrit'
             ))
+
+    db.session.add(Recipe(
+            title='Egg on Rice',
+            ingredients='egg, rice',
+            method='Put egg on rice.',
+            owner=1,
+            image='rice-and-egg.jpg'
+    ))
     db.session.commit()
 
 

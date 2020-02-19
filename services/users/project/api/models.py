@@ -3,6 +3,7 @@ import jwt
 
 from project import db, bcrypt
 from flask import current_app
+from datetime import datetime
 
 
 class User(db.Model):
@@ -60,3 +61,19 @@ class User(db.Model):
             return 'Signature expired. Please log in again.'
         except jwt.InvalidTokenError:
             return 'Invalid token. Please log in again'
+
+
+class Recipe(db.Model):
+    __tablename__ = "recipe"
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    title = db.Column(db.String(2048), unique=True, nullable=False)
+    description = db.Column(db.String(65536), unique=True, nullable=True)
+    ingredients = db.Column(db.String(65536), unique=True, nullable=False)
+    method = db.Column(db.String(65536), unique=True, nullable=False)
+    date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    owner = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    url = db.Column(db.String(2048), unique=True, nullable=True)
+    image = db.Column(db.String(255), unique=True, nullable=True)
+
+    def __repr__(self):
+        return '<Recipe %r>' % self.title
