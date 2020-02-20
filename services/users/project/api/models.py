@@ -3,7 +3,6 @@ import jwt
 
 from project import db, bcrypt
 from flask import current_app
-from datetime import datetime
 
 
 class User(db.Model):
@@ -11,7 +10,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username = db.Column(db.String(128), unique=True, nullable=False)
     email = db.Column(db.String(128), unique=True, nullable=False)
-    active = db.Column(db.Boolean(), default=True, nullable=False)
+    # active = db.Column(db.Boolean(), default=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
     active = db.Column(db.Boolean, default=True, nullable=False)
 
@@ -33,6 +32,7 @@ class User(db.Model):
 
     def encode_auth_token(self, user_id):
         """Generates the auth token"""
+
         try:
             payload = {
                 'exp': datetime.datetime.utcnow() + datetime.timedelta(
@@ -70,7 +70,7 @@ class Recipe(db.Model):
     description = db.Column(db.String(65536), unique=True, nullable=True)
     ingredients = db.Column(db.String(65536), unique=True, nullable=False)
     method = db.Column(db.String(65536), unique=True, nullable=False)
-    date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    date = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow)
     owner = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     url = db.Column(db.String(2048), unique=True, nullable=True)
     image = db.Column(db.String(255), unique=True, nullable=True)

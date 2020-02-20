@@ -68,6 +68,7 @@ def seed_db():
             email='marka@example.com',
             password='sekrit'
             ))
+    db.session.commit()
 
     db.session.add(Recipe(
             title='Egg on Rice',
