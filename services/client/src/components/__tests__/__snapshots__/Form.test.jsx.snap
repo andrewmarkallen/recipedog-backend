@@ -1,15 +1,27 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Login Form renders a snapshot properly 1`] = `
+exports[`\${el.formType} Form renders a snapshot properly 1`] = `
 <div>
   <h1>
-    Login
+    Register
   </h1>
   <hr />
   <br />
   <form
     onSubmit={[Function]}
   >
+    <div
+      className="form-group"
+    >
+      <input
+        className="form-control input-lg"
+        name="username"
+        placeholder="Enter a username"
+        required={true}
+        type="text"
+        value=""
+      />
+    </div>
     <div
       className="form-group"
     >
@@ -43,28 +55,16 @@ exports[`Login Form renders a snapshot properly 1`] = `
 </div>
 `;
 
-exports[`Register Form renders a snapshot properly 1`] = `
+exports[`\${el.formType} Form renders a snapshot properly 2`] = `
 <div>
   <h1>
-    Register
+    Login
   </h1>
   <hr />
   <br />
   <form
     onSubmit={[Function]}
   >
-    <div
-      className="form-group"
-    >
-      <input
-        className="form-control input-lg"
-        name="username"
-        placeholder="Enter a username"
-        required={true}
-        type="text"
-        value=""
-      />
-    </div>
     <div
       className="form-group"
     >
