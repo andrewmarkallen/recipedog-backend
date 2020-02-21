@@ -19,21 +19,25 @@ const NavBar = (props)  => (
         <LinkContainer to="/about">
           <NavItem eventKey={2}>About</NavItem>
         </LinkContainer>
-        <LinkContainer to="/status">
+        {props.isAuthenticated &&
+          <LinkContainer to="/status">
           <NavItem eventKey={3}>User Status</NavItem>
-        </LinkContainer>
+        </LinkContainer>}
       </Nav>
 
       <Nav pullRight>
-        <LinkContainer to="/register">
+        {!props.isAuthenticated &&
+          <LinkContainer to="/register">
           <NavItem eventKey={1}>Register</NavItem>
-        </LinkContainer>
-        <LinkContainer to="/login">
+        </LinkContainer>}
+        {!props.isAuthenticated &&
+          <LinkContainer to="/login">
           <NavItem eventKey={2}>Log In</NavItem>
-        </LinkContainer>
-        <LinkContainer to="/logout">
+        </LinkContainer>}
+        {props.isAuthenticated &&
+          <LinkContainer to="/logout">
           <NavItem eventKey={3}>Log Out</NavItem>
-        </LinkContainer>
+        </LinkContainer>}
       </Nav>
     </Navbar.Collapse>
   </Navbar>
