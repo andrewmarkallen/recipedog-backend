@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`\${el.formType} Form renders a snapshot properly 1`] = `
+exports[`When not authenticated \${el.formType} Form renders a snapshot properly 1`] = `
 <div>
   <h1>
     Register
@@ -55,7 +55,7 @@ exports[`\${el.formType} Form renders a snapshot properly 1`] = `
 </div>
 `;
 
-exports[`\${el.formType} Form renders a snapshot properly 2`] = `
+exports[`When not authenticated \${el.formType} Form renders a snapshot properly 2`] = `
 <div>
   <h1>
     Login
