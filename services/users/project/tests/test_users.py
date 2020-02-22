@@ -241,7 +241,7 @@ class TestUserService(BaseTestCase):
     def test_add_user_not_admin(self):
         add_user('test', 'test@test.com', 'test')
         with self.client:
-            resp_login =self.login_user('test@test.com', 'test')
+            resp_login = self.login_user('test@test.com', 'test')
             token = json.loads(resp_login.data.decode())['auth_token']
             response = self.client.post(
                 '/users',
@@ -259,6 +259,7 @@ class TestUserService(BaseTestCase):
                 data['message'] == 'You do not have permission to do that.'
             )
             self.assertEqual(response.status_code, 401)
+
 
 if __name__ == '__main__':
     unittest.main()
