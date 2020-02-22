@@ -10,17 +10,18 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username = db.Column(db.String(128), unique=True, nullable=False)
     email = db.Column(db.String(128), unique=True, nullable=False)
-    # active = db.Column(db.Boolean(), default=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
     active = db.Column(db.Boolean, default=True, nullable=False)
+    admin = db.Column(db.Boolean, default=False, nullable=False)
 
-    def __init__(self, username, email, password):
+    def __init__(self, username, email, password, admin=False):
         self.username = username
         self.email = email
         self.password = bcrypt.generate_password_hash(
             password,
             current_app.config.get('BCRYPT_LOG_ROUNDS')
             ).decode()
+        self.admin = admin
 
     def to_json(self):
         return {
@@ -28,6 +29,7 @@ class User(db.Model):
             'username': self.username,
             'email': self.email,
             'active': self.active,
+            'admin': self.admin,
         }
 
     def encode_auth_token(self, user_id):
@@ -70,7 +72,8 @@ class Recipe(db.Model):
     description = db.Column(db.String(65536), unique=True, nullable=True)
     ingredients = db.Column(db.String(65536), unique=True, nullable=False)
     method = db.Column(db.String(65536), unique=True, nullable=False)
-    date = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow)
+    date = db.Column(
+        db.DateTime, nullable=False, default=datetime.datetime.utcnow)
     owner = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     url = db.Column(db.String(2048), unique=True, nullable=True)
     image = db.Column(db.String(255), unique=True, nullable=True)
