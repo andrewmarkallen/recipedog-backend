@@ -1,4 +1,14 @@
 FROM nginx:1.13.8
 
+# Copy nginx configuration files
 RUN rm /etc/nginx/conf.d/default.conf
-COPY /prod.conf /etc/nginx/conf.d
+COPY prod_http.conf /etc/nginx/conf.d
+RUN mkdir -p /var/run/nginx
+COPY prod.conf /var/run/nginx/prod.conf
+
+WORKDIR /var/run/nginx
+# Copy entrypoint script
+COPY ./entrypoint-prod.sh /var/run/nginx/entrypoint-prod.sh
+
+# run server
+CMD ["./entrypoint-prod.sh"]

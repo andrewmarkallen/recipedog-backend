@@ -22,12 +22,35 @@ services:
     build:
       context: ./services/nginx
       dockerfile: Dockerfile-prod
+    environment:
+      - CLEAR_CERTS=0
+      - CERT_DOMAIN=${CERT_DOMAIN}
     restart: always
     ports:
       - 80:80
+      - 443:443
     depends_on:
       - users
       - client
+    volumes:
+      - data:/etc/letsencrypt
+      - webroot:/var/www/certbot
+
+  certbot:
+    container_name: certbot
+    build:
+      context: ./services/certbot
+      dockerfile: Dockerfile-prod
+    environment:
+      - STAGING=0
+      - CLEAR_CERTS=0
+      - CERT_DOMAIN=${CERT_DOMAIN}
+      - CERT_EMAIL=${CERT_EMAIL}
+    volumes:
+      - data:/etc/letsencrypt
+      - webroot:/var/www/certbot
+    depends_on:
+      - nginx
 
   users:
     container_name: users
@@ -57,3 +80,7 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+
+volumes:
+  data:
+  webroot:
