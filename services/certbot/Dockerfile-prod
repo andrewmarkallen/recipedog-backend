@@ -1,0 +1,10 @@
+FROM certbot/certbot:latest
+
+RUN mkdir -p /var/run/certbot
+
+WORKDIR /var/run/certbot
+# Copy entrypoint script
+COPY ./entrypoint-prod.sh /var/run/certbot/entrypoint-prod.sh
+
+# run server
+ENTRYPOINT ./entrypoint-prod.sh
