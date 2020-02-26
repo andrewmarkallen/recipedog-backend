@@ -3,7 +3,7 @@
 exports[`UsersList renders a snapshot properly 1`] = `
 <div>
   <h1>
-    All users
+    All Users
   </h1>
   <hr />
   <br />

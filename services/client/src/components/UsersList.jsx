@@ -4,7 +4,7 @@ import { Table } from 'react-bootstrap'
 const UsersList = (props)  => {
   return (
     <div>
-      <h1>All users</h1>
+      <h1>All Users</h1>
       <hr/><br/>
       <Table striped bordered condensed hover>
         <thead>
