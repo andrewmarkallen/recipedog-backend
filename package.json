@@ -1,0 +1,7 @@
+{
+  "name": "recipe-dog",
+  "devDependencies": {
+    "randomstring": "^1.1.5",
+    "testcafe": "1.8.2"
+  }
+}
