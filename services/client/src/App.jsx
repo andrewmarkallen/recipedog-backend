@@ -42,7 +42,7 @@ class App extends Component {
     this.setState({ isAuthenticated: false})
   }
 
-  loginUser() {
+  loginUser(token) {
     window.localStorage.setItem('authToken', token)
     this.setState({ isAuthenticated: true})
     this.getUsers()

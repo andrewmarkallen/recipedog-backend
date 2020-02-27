@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Redirect } from 'react-router-dom'
+import axios from 'axios'
 
 class Form extends Component {
   constructor (props) {
@@ -18,7 +19,7 @@ class Form extends Component {
     this.clearForm()
   }
   componentWillReceiveProps(nextProps) {
-    if (this.props.formType !== nextprops.formType) {
+    if (this.props.formType !== nextProps.formType) {
       this.clearForm()
     }
   }
