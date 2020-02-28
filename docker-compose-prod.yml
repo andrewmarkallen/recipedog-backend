@@ -35,6 +35,7 @@ services:
     volumes:
       - data:/etc/letsencrypt
       - webroot:/var/www/certbot
+      - images:/var/www/images
 
   certbot:
     container_name: certbot
@@ -69,6 +70,8 @@ services:
       - users-db
     links:
       - users-db
+    volumes:
+      - images:/usr/src/app/images
 
   users-db:
     container_name: users-db
@@ -84,3 +87,4 @@ services:
 volumes:
   data:
   webroot:
+  images:

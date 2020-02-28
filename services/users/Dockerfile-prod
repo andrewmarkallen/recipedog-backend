@@ -22,5 +22,8 @@ COPY ./entrypoint-prod.sh /usr/src/app/entrypoint-prod.sh
 # add app
 COPY . /usr/src/app
 
+# copy over test images
+COPY ./images /usr/src/app/images/
+
 # run server
 CMD ["./entrypoint-prod.sh"]

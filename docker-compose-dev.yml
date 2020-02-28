@@ -31,6 +31,8 @@ services:
     depends_on:
       - users
       - client
+    volumes:
+      - ./services/users/images:/var/www/images
 
   users:
     container_name: users
@@ -39,6 +41,8 @@ services:
       dockerfile: Dockerfile-dev
     volumes:
       - './services/users:/usr/src/app'
+      - ./services/users/images:/usr/src/app/images
+
     expose:
       - '5000'
     environment:
