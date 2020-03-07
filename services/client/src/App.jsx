@@ -8,6 +8,7 @@ import NavBar from './components/NavBar'
 import Form from './components/Form'
 import Logout from './components/Logout'
 import UserStatus from './components/UserStatus'
+import Recipes from './components/Recipes'
 
 class App extends Component {
   constructor() {
@@ -65,6 +66,12 @@ class App extends Component {
               />
             )} />
             <Route exact path='/about' component={About}/>
+            <Route exact path='/myrecipes' render={()  =>  (
+              <Recipes
+                isAuthenticated={this.state.isAuthenticated}
+                loginUser={this.loginUser}
+              />
+            )} />
             <Route exact path='/register' render={()  => (
               <Form
                 formType={'register'}

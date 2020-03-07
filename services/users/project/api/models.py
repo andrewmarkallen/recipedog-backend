@@ -13,6 +13,7 @@ class User(db.Model):
     password = db.Column(db.String(255), nullable=False)
     active = db.Column(db.Boolean, default=True, nullable=False)
     admin = db.Column(db.Boolean, default=False, nullable=False)
+    recipes = db.relationship('Recipe', backref='users', lazy=True)
 
     def __init__(self, username, email, password, admin=False):
         self.username = username
@@ -68,15 +69,15 @@ class User(db.Model):
 class Recipe(db.Model):
     __tablename__ = "recipe"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    title = db.Column(db.String(2048), unique=True, nullable=False)
-    description = db.Column(db.String(65536), unique=True, nullable=True)
-    ingredients = db.Column(db.String(65536), unique=True, nullable=False)
-    method = db.Column(db.String(65536), unique=True, nullable=False)
+    title = db.Column(db.String(2048), nullable=False)
+    description = db.Column(db.String(65536), nullable=True)
+    ingredients = db.Column(db.String(65536), nullable=False)
+    method = db.Column(db.String(65536), nullable=False)
     date = db.Column(
         db.DateTime, nullable=False, default=datetime.datetime.utcnow)
     owner = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    url = db.Column(db.String(2048), unique=True, nullable=True)
-    image = db.Column(db.String(255), unique=True, nullable=True)
+    url = db.Column(db.String(2048), nullable=True)
+    image = db.Column(db.String(255), nullable=True)
 
     def __repr__(self):
         return '<Recipe %r>' % self.title

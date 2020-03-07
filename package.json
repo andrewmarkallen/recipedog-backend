@@ -3,5 +3,6 @@
   "devDependencies": {
     "randomstring": "^1.1.5",
     "testcafe": "1.8.2"
-  }
+  },
+  "dependencies": {}
 }

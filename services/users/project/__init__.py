@@ -18,6 +18,9 @@ def create_app(script_info=None):
 
     # instantiate the app
     app = Flask(__name__)
+    UPLOAD_FOLDER = 'images/'
+    app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+    app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
     # enable CORS
     CORS(app)
@@ -37,6 +40,10 @@ def create_app(script_info=None):
     app.register_blueprint(users_blueprint)
     from project.api.auth import auth_blueprint
     app.register_blueprint(auth_blueprint)
+    from project.api.images import images_blueprint
+    app.register_blueprint(images_blueprint)
+    from project.api.recipes import recipes_blueprint
+    app.register_blueprint(recipes_blueprint)
 
     # shell context for flask cli
     app.shell_context_processor({'app': app, 'db': db})

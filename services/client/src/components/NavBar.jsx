@@ -16,12 +16,16 @@ const NavBar = (props)  => (
         <LinkContainer to="/">
           <NavItem eventKey={1}>Home</NavItem>
         </LinkContainer>
+        {props.isAuthenticated &&
+          <LinkContainer to="/myrecipes">
+          <NavItem eventKey={2}>Recipes</NavItem>
+        </LinkContainer>}
         <LinkContainer to="/about">
-          <NavItem eventKey={2}>About</NavItem>
+          <NavItem eventKey={3}>About</NavItem>
         </LinkContainer>
         {props.isAuthenticated &&
           <LinkContainer to="/status">
-          <NavItem eventKey={3}>User Status</NavItem>
+          <NavItem eventKey={4}>User Status</NavItem>
         </LinkContainer>}
       </Nav>
 
