@@ -3,6 +3,7 @@ import { Button, ControlLabel, DropdownButton, FormControl, FormGroup, MenuItem 
 import { useDropzone } from 'react-dropzone'
 import axios from 'axios'
 import { Link } from 'react-router-dom'
+import RecipesList from './RecipesList'
 
 const upload_url = `${process.env.REACT_APP_USERS_SERVICE_URL}/upload`
 
@@ -79,7 +80,7 @@ class Recipes extends Component {
         url: '',
         image: ''
       },
-      recipes: '',
+      recipes: ['todo'],
       formType: 'manual'
     }
     this.addRecipeSelector = this.addRecipeSelector.bind(this)
@@ -134,7 +135,7 @@ class Recipes extends Component {
         url: '',
         image: ''
       },
-      formType: 'manual'
+      formType: 'manual',
     })
   }
 
@@ -322,8 +323,8 @@ class Recipes extends Component {
           }
         </div>
 
-        <div>
-        <h1>My Recipes</h1>
+        <div id="my-recipes">
+        <RecipesList recipes={this.state.recipes}/>
         </div>
       </div>
     )
