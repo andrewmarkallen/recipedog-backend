@@ -2,7 +2,7 @@ import { Selector } from 'testcafe'
 
 const TEST_URL = process.env.TEST_URL
 
-async function register(t, username, email) {
+export async function register(t, username, email) {
   await t
   .navigateTo(`${TEST_URL}/register`)
   .typeText('input[name="username"]', username)
@@ -11,4 +11,10 @@ async function register(t, username, email) {
   .click(Selector('input[type="submit"]'))
 }
 
-export default register
+export async function login(t, email, password) {
+  await t
+  .navigateTo(`${TEST_URL}/login`)
+  .typeText('input[name="email"]', email)
+  .typeText('input[name="password"]', password)
+  .click(Selector('input[type="submit"]'))
+}

@@ -1,5 +1,5 @@
 import { Selector } from 'testcafe'
-import register from './util'
+import {register} from './util'
 
 const randomstring = require('randomstring')
 
