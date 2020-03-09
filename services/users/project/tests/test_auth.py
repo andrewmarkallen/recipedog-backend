@@ -3,7 +3,7 @@ import json
 from project import db
 from project.api.models import User
 from project.tests.base import BaseTestCase
-from project.tests.utils import add_user
+from project.tests.utils import add_user, login_user
 from flask import current_app
 
 
@@ -123,22 +123,15 @@ class TestAuthBlueprint(BaseTestCase):
             self.assertIn('fail', data['status'])
 
     def test_registered_user_login(self):
-        with self.client:
-            add_user('test', 'test@test.com', 'test')
-            response = self.client.post(
-                '/auth/login',
-                data=json.dumps({
-                    'email': 'test@test.com',
-                    'password': 'test',
-                }),
-                content_type='application/json'
-            )
-            data = json.loads(response.data.decode())
-            self.assertTrue(data['status'] == 'success')
-            self.assertTrue(data['message'] == 'Successfully logged in.')
-            self.assertTrue(data['auth_token'])
-            self.assertTrue(response.content_type == 'application/json')
-            self.assertEqual(response.status_code, 200)
+        # with self.client:
+        add_user('test', 'test@test.com', 'test')
+        response = login_user('test@test.com', 'test')
+        data = json.loads(response.data.decode())
+        self.assertTrue(data['status'] == 'success')
+        self.assertTrue(data['message'] == 'Successfully logged in.')
+        self.assertTrue(data['auth_token'])
+        self.assertTrue(response.content_type == 'application/json')
+        self.assertEqual(response.status_code, 200)
 
     def test_not_registered_user_login(self):
         with self.client:

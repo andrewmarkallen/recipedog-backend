@@ -1,7 +1,7 @@
 from project.api.utils import authenticate
 from flask import Blueprint, jsonify, request
 from sqlalchemy import exc
-from project.api.models import Recipe, User
+from project.api.models import Recipe
 from project import db
 
 recipes_blueprint = Blueprint('recipes', __name__,
@@ -30,13 +30,20 @@ def recipes(resp):
         # except ValueError:
         #     return jsonify(response_object), 400
     try:
-        # user_id = resp
+        user_id = resp
         # user = User.query.filter_by(id=int(user_id)).first()
+        recipes = Recipe.query.filter_by(owner=int(user_id)).all()
+        data = list(map(Recipe.to_json, recipes))
+        # a = map((lambda a: 'lamb'), recipes)
+        # b = recipes[0]
+        # test = json.dumps(a)
         # recipes = user.recipes.all()
         response_object = {
             'status': 'success',
-            'data': recipes.to_json()
+            'data': data
         }
+
         return jsonify(response_object), 200
-    except:
+    except Exception as e:
+        response_object['message'] = str(e)
         return jsonify(response_object), 404

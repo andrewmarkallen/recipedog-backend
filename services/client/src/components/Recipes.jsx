@@ -112,7 +112,8 @@ class Recipes extends Component {
     .then((res)  => {
       console.log(res)
       this.setState({
-        dummy: 'dummy'
+        recipes: res.data.data
+
       })
     })
     .catch((error)  => {console.log(error)})
@@ -146,7 +147,6 @@ class Recipes extends Component {
 
   handleFormChange(event) {
     console.log('handleFormChange')
-    // console.log(this.state.formData)
     console.log(event.target.name)
     const obj = this.state.formData
     obj[event.target.name] = event.target.value
@@ -169,7 +169,7 @@ class Recipes extends Component {
       data: this.state.formData
 
     }
-    axios(options)
+    axios(options).then(this.getRecipes())
     console.log(options)
   }
 

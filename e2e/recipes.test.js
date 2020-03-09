@@ -29,12 +29,12 @@ test(`should display the add a recipe dropdown`, async (t)  => {
 test(`existing recipes should be displayed in the my recipes`, async (t)  => {
 
   //log in user
-  await login(t, 'marka@example.com', 'sekrit')
+  await login(t, 'yunwoo@example.com', 'sekrit')
 
   //see if database test recipe is still there
   await t.navigateTo(`${TEST_URL}/myrecipes`)
 
-  const tableRow = Selector('td').withText(title).parent()
+  const tableRow = Selector('td').withText('Egg on Rice').parent()
   await t.expect(tableRow.child().withText('Egg on Rice').exists).ok()
 })
 
@@ -47,13 +47,16 @@ test(`should allow a user to add a recipe`, async(t)  => {
     .typeText('input[name="title"]', title)
     .typeText('input[name="description"]', description)
     .typeText('textarea[name="ingredients"]', ingredients)
-    .pressKey('enter')
     .typeText('textarea[name="method"]', method)
-    .pressKey('enter')
+    .click(Selector('button[type="submit"]'))
   //new recipe should be displayed
   const tableRow = Selector('td').withText(title).parent()
   await t
     .expect(tableRow.child().withText(description).exists).ok()
-    .expect(tableRow.child().withText(ingredients).exists).ok()
-    .expect(tableRow.child().withText(method).exists).ok()
+    .expect(tableRow.child().withText(ingredients.split('\n')[0]).exists).ok()
+    .expect(tableRow.child().withText(ingredients.split('\n')[1]).exists).ok()
+    .expect(tableRow.child().withText(ingredients.split('\n')[2]).exists).ok()
+    .expect(tableRow.child().withText(method.split('\n')[0]).exists).ok()
+    .expect(tableRow.child().withText(method.split('\n')[1]).exists).ok()
+    .expect(tableRow.child().withText(method.split('\n')[2]).exists).ok()
 })

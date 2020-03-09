@@ -1,7 +1,19 @@
 import React from 'react'
 import { Table } from 'react-bootstrap'
 
+const images_path = `${process.env.REACT_APP_USERS_SERVICE_URL}/images/`
+
 const RecipesList = (props)  => {
+
+  function formatImage(image_url) {
+    if(image_url) {
+      const url = images_path + image_url
+      return (
+        <img src={url} width="100"></img>
+      )
+    }
+    else return(<span>no image</span>)
+  }
   return (
     <div>
       <h1>My Recipes</h1>
@@ -26,7 +38,9 @@ const RecipesList = (props)  => {
                   <td>{recipe.description}</td>
                   <td>{recipe.ingredients}</td>
                   <td>{recipe.method}</td>
-                  <td>{recipe.image}</td>
+                  <td>
+                    {formatImage(recipe.image)}
+                  </td>
                   <td>{recipe.url}</td>
                 </tr>
               )

@@ -81,3 +81,14 @@ class Recipe(db.Model):
 
     def __repr__(self):
         return '<Recipe %r>' % self.title
+
+    def to_json(self):
+        return {
+            'id': self.id,
+            'title': self.title,
+            'description': self.description,
+            'ingredients': self.ingredients,
+            'method': self.method,
+            'url': self.url,
+            'image': self.image
+        }

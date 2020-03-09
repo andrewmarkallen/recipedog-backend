@@ -1,10 +1,9 @@
 from uuid import uuid4
-from os.path import splitext, join
-from flask import (Blueprint, jsonify, request, redirect,
+from os.path import splitext
+from flask import (Blueprint, jsonify, request,
                    flash)
 from werkzeug.utils import secure_filename
 from pathlib import Path
-from flask import current_app, logging
 
 images_folder = Path("images/")
 

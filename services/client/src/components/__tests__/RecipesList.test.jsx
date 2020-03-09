@@ -54,7 +54,7 @@ test('RecipesList renders properly', ()  => {
   expect(td.get(1).props.children).toBe(recipes[0]['description'])
   expect(td.get(2).props.children).toBe(recipes[0]['ingredients'])
   expect(td.get(3).props.children).toBe(recipes[0]['method'])
-  expect(td.get(4).props.children).toBe(recipes[0]['image'])
+  expect(td.get(4).props.children.props.src).toContain(recipes[0]['image'])
   expect(td.get(5).props.children).toBe(recipes[0]['url'])
 })
 
