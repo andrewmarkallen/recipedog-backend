@@ -81,8 +81,11 @@ class Recipes extends Component {
         image: ''
       },
       recipes: ['todo'],
-      formType: 'manual'
+      formType: 'manual',
+      promise: Promise.resolve(),
+      uploading: false
     }
+
     this.addRecipeSelector = this.addRecipeSelector.bind(this)
     this.handleFormChange = this.handleFormChange.bind(this)
     this.getUploadParams = this.getUploadParams.bind(this)
@@ -90,6 +93,7 @@ class Recipes extends Component {
     this.handleSubmit = this.handleSubmit.bind(this)
     this.handleFormSubmit = this.handleFormSubmit.bind(this)
     this.BasicDropzone = this.BasicDropzone.bind(this)
+    this.Spinner = this.Spinner.bind(this)
   }
 
   componentDidMount() {
@@ -157,8 +161,11 @@ class Recipes extends Component {
     alert('react dropzone upload submit handler')
   }
 
-  handleFormSubmit(event) {
+  async handleFormSubmit(event) {
     event.preventDefault()
+      // if we're uploading a file we need to wait for the image to be uploaded,
+      // and if we're not uploading an image, promise should be resolved
+    await this.state.promise
     const options = {
       url: `${process.env.REACT_APP_USERS_SERVICE_URL}/recipes`,
       method: 'post',
@@ -171,6 +178,19 @@ class Recipes extends Component {
     }
     axios(options).then(this.getRecipes())
     console.log(options)
+  }
+
+  Spinner(props) {
+    if(this.state.uploading) {
+      console.log("uploading")
+      return (
+        <div>UPLOADING</div>
+      )
+    }
+    else {
+      return (
+      <div>NOT UPLOADING</div>
+    )}
   }
 
   BasicDropzone(props) {
@@ -192,7 +212,8 @@ class Recipes extends Component {
           console.log(file)
           var formData = new FormData()
           formData.append('file', file)
-          axios.post(upload_url, formData)
+          this.setState({uploading: true})
+          const promise = axios.post(upload_url, formData)
             .then((res)  => {
               console.log('POSTed')
               console.log(res.data.filename)
@@ -201,6 +222,9 @@ class Recipes extends Component {
               this.setState(obj)
             })
             .catch((err)  => {console.log(err.response)})
+          const obj = {promise: promise, uploading: false}
+          this.setState(obj)
+          return promise
         })
 
       }
@@ -229,6 +253,7 @@ class Recipes extends Component {
       ...(isDragReject ? rejectStyle : {})
     }), [
       isDragActive,
+      isDragAccept,
       isDragReject
     ])
 
@@ -322,7 +347,9 @@ class Recipes extends Component {
           </form>
           }
         </div>
-
+        <div id="spinner">
+        <this.Spinner/>
+        </div>
         <div id="my-recipes">
         <RecipesList recipes={this.state.recipes}/>
         </div>

@@ -5,11 +5,11 @@ const images_path = `${process.env.REACT_APP_USERS_SERVICE_URL}/images/`
 
 const RecipesList = (props)  => {
 
-  function formatImage(image_url) {
+  function formatImage(image_url, title) {
     if(image_url) {
       const url = images_path + image_url
       return (
-        <img src={url} width="100"></img>
+        <img alt={title} src={url} width="100"></img>
       )
     }
     else return(<span>no image</span>)
@@ -39,7 +39,7 @@ const RecipesList = (props)  => {
                   <td>{recipe.ingredients}</td>
                   <td>{recipe.method}</td>
                   <td>
-                    {formatImage(recipe.image)}
+                    {formatImage(recipe.image, recipe.title)}
                   </td>
                   <td>{recipe.url}</td>
                 </tr>
