@@ -1,17 +1,23 @@
 import React from 'react'
-import { Navbar, Nav, NavItem } from 'react-bootstrap'
+import { FormGroup, FormControl, Navbar, Nav, NavItem } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
 
 const NavBar = (props)  => (
-  <Navbar inverse collapseOnSelect>
-    <Navbar.Header>
-      <Navbar.Brand>
-        <span>{props.title}</span>
-      </Navbar.Brand>
-      <Navbar.Toggle />
-    </Navbar.Header>
+  <Navbar inverse collapseOnSelect fixedTop={true}>
 
-    <Navbar.Collapse>
+    <Navbar.Form pullLeft>
+      <FormGroup>
+        <FormControl type="text" placeholder="Search" className="mr-sm-1" />
+      </FormGroup>
+    </Navbar.Form>
+
+    <Navbar.Header>
+      <Navbar.Toggle pullright="true" />
+    </Navbar.Header>
+    { <Navbar.Brand>
+      <span>{props.title}</span>
+    </Navbar.Brand> }
+    <Navbar.Collapse pullright="true">
       <Nav>
         <LinkContainer to="/">
           <NavItem eventKey={1}>Home</NavItem>
@@ -27,9 +33,6 @@ const NavBar = (props)  => (
           <LinkContainer to="/status">
           <NavItem eventKey={4}>User Status</NavItem>
         </LinkContainer>}
-      </Nav>
-
-      <Nav pullRight>
         {!props.isAuthenticated &&
           <LinkContainer to="/register">
           <NavItem eventKey={1}>Register</NavItem>

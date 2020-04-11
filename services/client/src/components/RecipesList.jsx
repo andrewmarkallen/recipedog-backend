@@ -1,19 +1,50 @@
-import React from 'react'
+import React, { useState,  useEffect } from 'react'
 import { Table } from 'react-bootstrap'
-
-const images_path = `${process.env.REACT_APP_USERS_SERVICE_URL}/images/`
+import { users_service_url} from './Util'
+import { Link } from 'react-router-dom'
+import axios from 'axios'
 
 const RecipesList = (props)  => {
 
-  function formatImage(image_url, title) {
+  const [tags, setTags] = useState({})
+  useEffect(()  => { if(props.isAuthenticated) {getTags()}},
+                   [props.recipes])
+
+  function getTags() {
+    console.log('getTags')
+    props.recipes.map((recipe)  => {
+      if (recipe.id === undefined) { return 'loading' }
+      else
+      {
+        const options = {
+          url: `${users_service_url}/recipes/${recipe.id}/tags`,
+          method: 'get',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${window.localStorage.authToken}`
+          }
+        }
+        return axios(options)
+        .then((res)  => {
+          var newTags = Object.assign({}, tags)
+          newTags[recipe.id] = res.data.data
+          setTags(newTags)
+          return res.data.data
+        })
+      }
+    })
+  }
+
+  function imageTag(image_url, title) {
     if(image_url) {
-      const url = images_path + image_url
+      const url = users_service_url + '/images/' + image_url
       return (
         <img alt={title} src={url} width="100"></img>
       )
     }
     else return(<span>no image</span>)
   }
+
   return (
     <div>
       <h1>My Recipes</h1>
@@ -27,6 +58,11 @@ const RecipesList = (props)  => {
             <th>Instructions</th>
             <th>Image</th>
             <th>URL</th>
+            <th>Tags</th>
+            <th>Cooktime</th>
+            <th>Serves</th>
+            <th>Notes</th>
+            <th>Preptime</th>
           </tr>
         </thead>
         <tbody>
@@ -34,14 +70,33 @@ const RecipesList = (props)  => {
             props.recipes.map((recipe)  => {
               return (
                 <tr key={recipe.id}>
-                  <td>{recipe.title}</td>
+                  <td>
+                      <Link to={
+                        {
+                          pathname: `/recipe/${recipe.id}`,
+                          state: {
+                            recipe: recipe,
+                            tags: tags[recipe.id]
+                          }
+                        }
+                      }>
+                        {recipe.title}
+                      </Link>
+                  </td>
                   <td>{recipe.description}</td>
                   <td>{recipe.ingredients}</td>
                   <td>{recipe.method}</td>
                   <td>
-                    {formatImage(recipe.image, recipe.title)}
+                    {imageTag(recipe.image, recipe.title)}
                   </td>
                   <td>{recipe.url}</td>
+                  <td><span id="tags">
+                    {tags[recipe.id] && tags[recipe.id].join()}
+                  </span></td>
+                  <td>{recipe.preptime}</td>
+                  <td>{recipe.cooktime}</td>
+                  <td>{recipe.notes}</td>
+                  <td>{recipe.serves}</td>
                 </tr>
               )
             })

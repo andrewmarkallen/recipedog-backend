@@ -10,6 +10,12 @@ const title = 'curried fig'
 const description = 'fig curried with salt'
 const ingredients = '100g curry sauce mix\n100g butter\n5 figs'
 const method = 'melt butter\nmix sauce mix and butter\nadd figs'
+const preptime = '30'
+const cooktime = '45'
+const serves = '3'
+const notes = 'very salty'
+const tagstring = 'dinner,fig , easy'
+const tags = ['dinner', 'fig', 'easy']
 
 const TEST_URL = process.env.TEST_URL
 
@@ -48,6 +54,11 @@ test(`should allow a user to add a recipe`, async(t)  => {
     .typeText('input[name="description"]', description)
     .typeText('textarea[name="ingredients"]', ingredients)
     .typeText('textarea[name="method"]', method)
+    .typeText('input[name="preptime"]', preptime)
+    .typeText('input[name="cooktime"]', cooktime)
+    .typeText('input[name="serves"]', serves)
+    .typeText('input[name="notes"]', notes)
+    .typeText('input[name="tags"]', tagstring)
     .click(Selector('button[type="submit"]'))
   //new recipe should be displayed
   const tableRow = Selector('td').withText(title).parent()
@@ -59,4 +70,15 @@ test(`should allow a user to add a recipe`, async(t)  => {
     .expect(tableRow.child().withText(method.split('\n')[0]).exists).ok()
     .expect(tableRow.child().withText(method.split('\n')[1]).exists).ok()
     .expect(tableRow.child().withText(method.split('\n')[2]).exists).ok()
+    .expect(tableRow.child().withText(preptime).exists).ok()
+    .expect(tableRow.child().withText(cooktime).exists).ok()
+    .expect(tableRow.child().withText(serves).exists).ok()
+    .expect(tableRow.child().withText(notes).exists).ok()
+    .expect(tableRow.child().withText(tags[0]).exists).ok()
+    .expect(tableRow.child().withText(tags[1]).exists).ok()
+    .expect(tableRow.child().withText(tags[2]).exists).ok()
+
+    // Go through to the recipe card
+    await t.click(Selector('a').withText(title))
+      .expect(Selector('div').withText('curried fig').exists).ok()
 })

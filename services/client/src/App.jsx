@@ -9,6 +9,7 @@ import Form from './components/Form'
 import Logout from './components/Logout'
 import UserStatus from './components/UserStatus'
 import Recipes from './components/Recipes'
+import RecipeCard from './components/RecipeCard'
 
 class App extends Component {
   constructor() {
@@ -94,6 +95,12 @@ class App extends Component {
             )} />
             <Route exact path='/status' render={()  =>  (
               <UserStatus
+                isAuthenticated={this.state.isAuthenticated}
+              />
+            )}/>
+            <Route exact path='/recipe/:id' render={(props)  =>  (
+              <RecipeCard
+                {...props}
                 isAuthenticated={this.state.isAuthenticated}
               />
             )}/>

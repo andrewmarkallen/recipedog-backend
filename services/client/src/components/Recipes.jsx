@@ -78,13 +78,20 @@ class Recipes extends Component {
         ingredients: '',
         method: '',
         url: '',
-        image: ''
+        image: '',
+        preptime: '',
+        cooktime: '',
+        serves: '',
+        notes: '',
+        tags: '',
       },
       recipes: ['todo'],
       formType: 'manual',
       promise: Promise.resolve(),
       uploading: false
     }
+
+
 
     this.addRecipeSelector = this.addRecipeSelector.bind(this)
     this.handleFormChange = this.handleFormChange.bind(this)
@@ -111,6 +118,7 @@ class Recipes extends Component {
         Authorization: `Bearer ${window.localStorage.authToken}`
       }
     }
+    console.log('GET RECIPES CALLED')
     console.log(options)
     return axios(options)
     .then((res)  => {
@@ -138,7 +146,12 @@ class Recipes extends Component {
         ingredients: '',
         method: '',
         url: '',
-        image: ''
+        image: '',
+        preptime: '',
+        cooktime: '',
+        serves: '',
+        notes: '',
+        tags: '',
       },
       formType: 'manual',
     })
@@ -176,7 +189,7 @@ class Recipes extends Component {
       data: this.state.formData
 
     }
-    axios(options).then(this.getRecipes())
+    axios(options).then(()  => {this.getRecipes()})
     console.log(options)
   }
 
@@ -317,7 +330,7 @@ class Recipes extends Component {
                 type="text"
                 value={this.state.formData.description}
                 name="description"
-                placeholder="woof A short description..."
+                placeholder="A short description..."
                 onChange={this.handleFormChange}
               />
             </FormGroup>
@@ -342,16 +355,69 @@ class Recipes extends Component {
                 onChange={this.handleFormChange}
               />
             </FormGroup>
+            <FormGroup>
+              <ControlLabel>Preparation Time</ControlLabel>
+              <FormControl
+                type="text"
+                value={this.state.formData.preptime}
+                name="preptime"
+                placeholder="time to prepare dish (in minutes)"
+                onChange={this.handleFormChange}
+              />
+            </FormGroup>
+            <FormGroup>
+              <ControlLabel>Cooking Time</ControlLabel>
+              <FormControl
+                type="text"
+                value={this.state.formData.cooktime}
+                name="cooktime"
+                placeholder="time to cook dish (in minutes)"
+                onChange={this.handleFormChange}
+              />
+            </FormGroup>
+            <FormGroup>
+              <ControlLabel>Serves</ControlLabel>
+              <FormControl
+                type="text"
+                value={this.state.formData.serves}
+                name="serves"
+                placeholder="Number of people this dish serves"
+                onChange={this.handleFormChange}
+              />
+            </FormGroup>
+            <FormGroup>
+              <ControlLabel>Notes</ControlLabel>
+              <FormControl
+                type="text"
+                value={this.state.formData.notes}
+                name="notes"
+                placeholder="Any notes you would like to add to appear after the recipe instructions, e.g. substitutions, advice"
+                onChange={this.handleFormChange}
+              />
+            </FormGroup>
+            <FormGroup>
+              <ControlLabel>Tags</ControlLabel>
+              <FormControl
+                type="text"
+                value={this.state.formData.tags}
+                name="tags"
+                placeholder="Tags separated by commas to help you find this recipe later, e.g. spicy, eggs, breakfast"
+                onChange={this.handleFormChange}
+              />
+            </FormGroup>
             <this.BasicDropzone/>
             <Button	type="submit">Submit</Button>
           </form>
           }
         </div>
         <div id="spinner">
-        <this.Spinner/>
+          <this.Spinner/>
         </div>
         <div id="my-recipes">
-        <RecipesList recipes={this.state.recipes}/>
+          <RecipesList
+            recipes={this.state.recipes}
+            isAuthenticated={this.props.isAuthenticated}
+          />
         </div>
       </div>
     )

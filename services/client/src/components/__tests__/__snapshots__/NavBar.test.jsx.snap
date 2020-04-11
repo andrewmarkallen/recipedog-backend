@@ -2,22 +2,31 @@
 
 exports[`NavBar renders a snapshot properly 1`] = `
 <nav
-  className="navbar navbar-inverse"
+  className="navbar navbar-inverse navbar-fixed-top"
 >
   <div
     className="container"
   >
     <div
+      className="navbar-form navbar-left"
+    >
+      <div
+        className="form-group"
+      >
+        <input
+          className="mr-sm-1 form-control"
+          placeholder="Search"
+          type="text"
+        />
+      </div>
+    </div>
+    <div
       className="navbar-header"
     >
-      <span
-        className="navbar-brand"
-      >
-        Hello, World!
-      </span>
       <button
         className="navbar-toggle collapsed"
         onClick={[Function]}
+        pullright="true"
         type="button"
       >
         <span
@@ -36,9 +45,15 @@ exports[`NavBar renders a snapshot properly 1`] = `
         />
       </button>
     </div>
+    <span
+      className="navbar-brand"
+    >
+      Hello, World!
+    </span>
     <div
       aria-expanded={null}
       className="navbar-collapse collapse"
+      pullright="true"
     >
       <ul
         className="nav navbar-nav"
@@ -69,11 +84,6 @@ exports[`NavBar renders a snapshot properly 1`] = `
             About
           </a>
         </li>
-      </ul>
-      <ul
-        className="nav navbar-nav navbar-right"
-        role={null}
-      >
         <li
           className=""
           role="presentation"
