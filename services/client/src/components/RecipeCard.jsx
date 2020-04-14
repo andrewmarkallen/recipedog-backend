@@ -23,15 +23,12 @@ const handleContentEditable = (event) => {
 const RecipeCard = (props)  => {
 
   console.log(props.location.state)
-  // const {tags, recipe} = props.location.state
   const [recipe, setRecipe] = useState(props.location.state.recipe)
   const [tags, setTags] = useState(props.location.state.tags)
   const [editMode, setEditMode] = useState(false)
   const [editsSaved, setEditsSaved] = useState(false)
-  // console.log(recipee)
 
-
-  function processModifiedValues() {
+  function processModifiedValues(properties) {
       const options = {
         url: `${users_service_url}/recipes/${recipe.id}`,
         method: 'put',
@@ -39,11 +36,16 @@ const RecipeCard = (props)  => {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${window.localStorage.authToken}`
         },
-        data: modifiedProperties
+        data: properties
       }
       axios(options).then((res)  => {
-        setEditsSaved(true)
-        const combined = {...recipe, ...modifiedProperties}
+        const keys = Object.keys(properties)
+        // Don't show modal if we set favourite
+        if(!(keys.length === 1 && keys[0] === 'favourite'))
+        {
+          setEditsSaved(true)
+        }
+        const combined = {...recipe, ...properties}
         setRecipe(combined)
        })
       .catch((err)  => { console.log(err)})
@@ -72,7 +74,8 @@ const RecipeCard = (props)  => {
 
     const handleClick = ()  => {
       setEditMode(false)
-      processModifiedValues()
+      processModifiedValues(modifiedProperties)
+      modifiedProperties = {}
     }
 
     var glyph = "glyphicon glyphicon-check"
@@ -121,11 +124,17 @@ const RecipeCard = (props)  => {
 
   const Favourite = (props)  => {
 
+
+    const handleClick = ()  => {
+      processModifiedValues({'favourite': !props.favourite})
+    }
+
     console.log(props)
     var glyph = "glyphicon glyphicon-star-empty"
     if(props.favourite) { glyph = "glyphicon glyphicon-star" }
     return(
-      <Button className="pull-left">
+      <Button className="pull-left"
+              onClick={handleClick}>
         <span className={glyph} aria-hidden="true"></span>
       </Button>
     )
