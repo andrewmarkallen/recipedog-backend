@@ -91,6 +91,115 @@ class TestRecipesBlueprint(BaseTestCase):
         self.assertIn('crowd-pleaser', tags)
         self.assertIn('dinner', tags)
 
+    def test_can_edit_recipe_title(self):
+        update = {
+            'title': 'pig stew'
+        }
+        # register and log in
+        add_user('test', 'test@test.com', 'test')
+        response = login_user('test@test.com', 'test')
+        token = json.loads(response.data.decode())['auth_token']
+        # post a new recipe
+        response = self.post_recipe(token, recipe_one_with_tags)
+        self.assertEqual(response.status_code, 201)
+        recipe_id = json.loads(response.data.decode())['id']
+        # attempt to edit the recipe
+        response = self.put_update(token, recipe_id, update)
+        self.assertEqual(response.status_code, 204)
+        # get the recipe again
+        response = self.get_recipe(token, recipe_id)
+        self.assertEqual(response.status_code, 200)
+        # see if the title has been updated
+        recipe = json.loads(response.data.decode())['data']
+        self.assertEqual(recipe['title'], 'pig stew')
+
+    def test_editing_non_existent_parameters(self):
+        update = {
+            'fake-param': 'does not exist'
+        }
+        # register and log in
+        add_user('test', 'test@test.com', 'test')
+        response = login_user('test@test.com', 'test')
+        token = json.loads(response.data.decode())['auth_token']
+        # post a new recipe
+        response = self.post_recipe(token, recipe_one_with_tags)
+        self.assertEqual(response.status_code, 201)
+        recipe_id = json.loads(response.data.decode())['id']
+        # attempt to edit the recipe
+        response = self.put_update(token, recipe_id, update)
+        # should receive meaningful response
+        self.assertEqual(response.status_code, 404)
+        data = json.loads(response.data.decode())
+        self.assertEqual(data['message'], 'Error: parameter does not exist')
+
+    def test_can_edit_multiple_parameters(self):
+        update = {
+            'title': 'pig stew',
+            'cooktime': 13,
+            'ingredients': 'new ingredients',
+            'method': 'new method'
+        }
+        # register and log in
+        add_user('test', 'test@test.com', 'test')
+        response = login_user('test@test.com', 'test')
+        token = json.loads(response.data.decode())['auth_token']
+        # post a new recipe
+        response = self.post_recipe(token, recipe_one_with_tags)
+        self.assertEqual(response.status_code, 201)
+        recipe_id = json.loads(response.data.decode())['id']
+        # attempt to edit the recipe
+        response = self.put_update(token, recipe_id, update)
+        self.assertEqual(response.status_code, 204)
+        # get the recipe again
+        response = self.get_recipe(token, recipe_id)
+        self.assertEqual(response.status_code, 200)
+        # see if the title has been updated
+        recipe = json.loads(response.data.decode())['data']
+        self.assertEqual(recipe['title'], 'pig stew')
+        self.assertEqual(recipe['cooktime'], 13)
+        self.assertEqual(recipe['ingredients'], 'new ingredients')
+        self.assertEqual(recipe['method'], 'new method')
+
+    def test_fails_gracefully_when_mix_of_valid_and_invalid_edits(self):
+        update = {
+            'title': 'pig stew',
+            'cooktime': 13,
+            'ingredients': 'new ingredient',
+            'method': 'new method',
+            'FAILY': 'i should stop rest from passing'
+        }
+        # register and log in
+        add_user('test', 'test@test.com', 'test')
+        response = login_user('test@test.com', 'test')
+        token = json.loads(response.data.decode())['auth_token']
+        # post a new recipe
+        response = self.post_recipe(token, recipe_one_with_tags)
+        self.assertEqual(response.status_code, 201)
+        recipe_id = json.loads(response.data.decode())['id']
+        # attempt to edit the recipe
+        response = self.put_update(token, recipe_id, update)
+        self.assertEqual(response.status_code, 404)
+        # get the recipe again
+        response = self.get_recipe(token, recipe_id)
+        self.assertEqual(response.status_code, 200)
+        # make sure all old values are still there, 'update' did nothing
+        recipe = json.loads(response.data.decode())['data']
+
+        for key in recipe_one_no_tags.keys():
+            # no tags is NOT a typo, no tags in response
+            #  tags must be retrieved separately afterwards
+            self.assertEqual(recipe[key], recipe_one_no_tags[key])
+
+    def put_update(self, token, recipe_id, update):
+        with self.client:
+            response = self.client.put(
+                f'/recipes/{recipe_id}',
+                headers={'Authorization': f'Bearer {token}'},
+                data=json.dumps(update),
+                content_type='application/json'
+            )
+            return response
+
     def get_recipe(self, token, recipe_id):
         with self.client:
             response = self.client.get(

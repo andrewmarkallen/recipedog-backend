@@ -6,15 +6,16 @@ const randomstring = require('randomstring')
 const username = randomstring.generate()
 const email = `${username}@test.com`
 
-const title = 'curried fig'
-const description = 'fig curried with salt'
-const ingredients = '100g curry sauce mix\n100g butter\n5 figs'
-const method = 'melt butter\nmix sauce mix and butter\nadd figs'
+const randomTitle = randomstring.generate()
+const title = 'proper-curried-fig'
+const description = 'fig with salt'
+const ingredients = '100g curry mix\n100g butter\n5 figs'
+const method = 'melt butter\nmix with sauce\nadd figs'
 const preptime = '30'
 const cooktime = '45'
 const serves = '3'
-const notes = 'very salty'
-const tagstring = 'dinner,fig , easy'
+const notes = 'salty'
+const tagstring = 'dinner, fig, easy'
 const tags = ['dinner', 'fig', 'easy']
 
 const TEST_URL = process.env.TEST_URL
@@ -50,7 +51,7 @@ test(`should allow a user to add a recipe`, async(t)  => {
   //add a new recipe
   await t
     .navigateTo(`${TEST_URL}/myrecipes`)
-    .typeText('input[name="title"]', title)
+    .typeText('input[name="title"]', randomTitle)
     .typeText('input[name="description"]', description)
     .typeText('textarea[name="ingredients"]', ingredients)
     .typeText('textarea[name="method"]', method)
@@ -61,7 +62,7 @@ test(`should allow a user to add a recipe`, async(t)  => {
     .typeText('input[name="tags"]', tagstring)
     .click(Selector('button[type="submit"]'))
   //new recipe should be displayed
-  const tableRow = Selector('td').withText(title).parent()
+  const tableRow = Selector('td').withText(randomTitle).parent()
   await t
     .expect(tableRow.child().withText(description).exists).ok()
     .expect(tableRow.child().withText(ingredients.split('\n')[0]).exists).ok()
@@ -78,7 +79,45 @@ test(`should allow a user to add a recipe`, async(t)  => {
     .expect(tableRow.child().withText(tags[1]).exists).ok()
     .expect(tableRow.child().withText(tags[2]).exists).ok()
 
-    // Go through to the recipe card
-    await t.click(Selector('a').withText(title))
-      .expect(Selector('div').withText('curried fig').exists).ok()
+  // Go through to the recipe card
+  await t.click(Selector('a').withText(randomTitle))
+    .expect(Selector('div').withText(randomTitle).exists).ok()
+})
+
+test(`should allow a user to edit a recipe`, async(t)  => {
+
+  // log in user
+  await login(t, 'marka@example.com', 'sekrit')
+
+  // recipe should still be there
+  const link = Selector('a').withText(randomTitle)
+  await t
+    .navigateTo(`${TEST_URL}/myrecipes`)
+    .expect(link.exists).ok()
+
+  // Go through to recipe card
+  await t.click(link).expect(Selector('div').withText(randomTitle).exists).ok()
+
+  // Attempt to edit the recipe
+  await t.click(Selector('#edit-button'))
+    .expect(Selector('#title-editable').exists).ok()
+    .selectEditableContent('#title-editable')
+    .pressKey('delete')
+    .typeText('div[id="title-editable"]', title)
+    .click('#done-editing')
+    .expect(Selector('#close-changes-modal').exists).ok()
+    .click('#close-changes-modal')
+
+  // See changes
+  await t
+    .navigateTo(`${TEST_URL}/myrecipes`)
+    .expect(Selector('a').withText(title).exists).ok()
+
+  // await t.eval(() => location.reload(true))
+  //
+  // await t
+  //   .navigateTo(`${TEST_URL}/myrecipes`)
+  //   .expect(Selector('a').withText(title))
+
+  // Return to the MyRecipes page and see updated title there
 })

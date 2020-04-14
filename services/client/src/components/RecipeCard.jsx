@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import {Button, Col, Jumbotron, Image, Grid, Row } from 'react-bootstrap'
 import { users_service_url } from './Util'
+import ChangesSavedModal from './ChangesSavedModal'
 import ContentEditable from 'react-contenteditable'
 import axios from 'axios'
 
@@ -8,27 +9,43 @@ import axios from 'axios'
 
 var modifiedProperties = {}
 
-
 // Handles all property editing
 const handleContentEditable = (event) => {
 
-  var id = event.currentTarget.id
+  // The element is suffixed with '-editable' which we strip off
+  var id = event.currentTarget.id.split("-")[0]
   var value = event.target.value
 
   modifiedProperties[id] = value
-  // console.log(modifiedProperties)
 }
+
 
 const RecipeCard = (props)  => {
 
   console.log(props.location.state)
-  const {tags, recipe} = props.location.state
+  // const {tags, recipe} = props.location.state
+  const [recipe, setRecipe] = useState(props.location.state.recipe)
+  const [tags, setTags] = useState(props.location.state.tags)
   const [editMode, setEditMode] = useState(false)
+  const [editsSaved, setEditsSaved] = useState(false)
+  // console.log(recipee)
 
 
   function processModifiedValues() {
-      const url = `${users_service_url}/recipes/${recipe.id}`
-      axios.put(url, modifiedProperties).then((res)  => { console.log('todo') })
+      const options = {
+        url: `${users_service_url}/recipes/${recipe.id}`,
+        method: 'put',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${window.localStorage.authToken}`
+        },
+        data: modifiedProperties
+      }
+      axios(options).then((res)  => {
+        setEditsSaved(true)
+        const combined = {...recipe, ...modifiedProperties}
+        setRecipe(combined)
+       })
       .catch((err)  => { console.log(err)})
 
   }
@@ -43,6 +60,7 @@ const RecipeCard = (props)  => {
     var glyph = "glyphicon glyphicon-pencil"
     return(
       <Button
+        id="edit-button"
         onClick={handleClick}
         className="pull-right">Edit Recipe
         <span className={glyph} aria-hidden="true"></span>
@@ -61,6 +79,7 @@ const RecipeCard = (props)  => {
     return(
         <Button
           onClick={handleClick}
+          id="done-editing"
         >
           Done Editing
           <span className={glyph} aria-hidden="true"></span>
@@ -79,6 +98,7 @@ const RecipeCard = (props)  => {
         <h1 className="text-center">
         { editMode &&
             <ContentEditable
+              id="title-editable"
               html={props.title}
               className="content-editable"
               onChange={handleContentEditable}
@@ -100,6 +120,7 @@ const RecipeCard = (props)  => {
   }
 
   const Favourite = (props)  => {
+
     console.log(props)
     var glyph = "glyphicon glyphicon-star-empty"
     if(props.favourite) { glyph = "glyphicon glyphicon-star" }
@@ -202,6 +223,7 @@ const RecipeCard = (props)  => {
       <div className="doneEditingButton">
       <DoneEditingButton />
       </div>
+      <ChangesSavedModal show={editsSaved} />
   </div>
   )
 }

@@ -20,10 +20,12 @@ def recipes(resp):
         try:
             recipe = request.get_json()
             recipe['owner'] = resp
-            db.session.add(Recipe(**recipe))
+            recipe_record = Recipe(**recipe)
+            db.session.add(recipe_record)
             db.session.commit()
             response_object['status'] = 'success'
             response_object['message'] = f'{recipe} was added'
+            response_object['id'] = recipe_record.id
             return jsonify(response_object), 201
         except exc.IntegrityError as e:
             db.session.rollback()
@@ -44,13 +46,37 @@ def recipes(resp):
         return jsonify(response_object), 404
 
 
-@recipes_blueprint.route('/recipes/<recipe_id>', methods=['GET'])
+valid_keys = ['title', 'description', 'ingredients',
+              'method', 'image', 'url', 'preptime',
+              'cooktime', 'serves', 'tags', 'favourite'
+              ]
+
+
+@recipes_blueprint.route('/recipes/<recipe_id>', methods=['GET', 'PUT'])
 @authenticate
 def get_recipe(resp, recipe_id):
     response_object = {
         'status': 'fail',
         'message': 'recipe does not exist'
     }
+    if request.method == 'PUT':
+        try:
+            update = request.get_json()
+            invalid_keys = [k for k in update.keys() if k not in valid_keys]
+            if invalid_keys != []:
+                response_object['message'] = 'Error: parameter does not exist'
+                return jsonify(response_object), 404
+            recipe = Recipe.query.filter_by(id=recipe_id).scalar()
+            if recipe is None:
+                return jsonify(response_object), 404
+            for key, value in update.items():
+                setattr(recipe, key, value)
+            db.session.commit()
+            return jsonify(response_object), 204
+        except exc.IntegrityError as e:
+            db.session.rollback()
+            response_object['message'] = str(e)
+            return jsonify(response_object), 400
     try:
         recipe = Recipe.query.filter_by(id=recipe_id).scalar()
         if recipe is None:
