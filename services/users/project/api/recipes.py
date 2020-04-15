@@ -48,7 +48,7 @@ def recipes(resp):
 
 valid_keys = ['title', 'description', 'ingredients',
               'method', 'image', 'url', 'preptime',
-              'cooktime', 'serves', 'tags', 'favourite'
+              'cooktime', 'serves', 'tags', 'favourite', 'notes'
               ]
 
 

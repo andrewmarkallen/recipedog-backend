@@ -93,7 +93,7 @@ const RecipeCard = (props)  => {
   const EditableField = (props)  => {
 
     return(
-      <div className="editableField">
+      <span className="editableField">
       { props.editMode &&
         <ContentEditable
           id={props.id + "-editable"}
@@ -102,7 +102,7 @@ const RecipeCard = (props)  => {
           onChange={props.onChange}/>
       }
       { !editMode && <span id={props.id}>{props.html}</span> }
-      </div>
+      </span>
     )
   }
 
@@ -111,7 +111,9 @@ const RecipeCard = (props)  => {
     return(
 
       <Jumbotron>
-        {props.tags && props.tags.map((tag) => {return <Tag tag={tag}/>})}
+        {props.tags && props.tags.map((tag, index) => {
+          return <Tag key={index} tag={tag}/>
+        })}
         <Favourite favourite={props.favourite}/>
         <h1 className="text-center">
           <EditableField
@@ -132,7 +134,6 @@ const RecipeCard = (props)  => {
 
   const Favourite = (props)  => {
 
-
     const handleClick = ()  => {
       processModifiedValues({'favourite': !props.favourite})
     }
@@ -149,7 +150,12 @@ const RecipeCard = (props)  => {
   }
 
   const RecipeImage = (props)  => {
-    const url = `${users_service_url}/images/${props.image}`
+    let image = props.image
+    if(image === "")
+    {
+      image = "none.png"
+    }
+    const url = `${users_service_url}/images/${image}`
     return(
       <Image src={url} responsive />
     )
@@ -161,13 +167,33 @@ const RecipeCard = (props)  => {
       <div className="description">
         <Col xs={6}>
           <Row>
-            { props.preptime && <h5 id="preptime"> Prep: {props.preptime} min </h5> }
-            { props.cooktime && <h5 id="cooktime"> Cook: {props.cooktime} min </h5> }
+            { props.preptime &&
+              <h5 id="preptime-field">
+                Preparation time:{' '}
+                <EditableField
+                  editMode={editMode} id="preptime"
+                  html={props.preptime.toString()} onChange={handleEdit}/>
+                min </h5>
+            }
+            { props.cooktime &&
+              <h5 id="cooktime-field">
+                Cooking time:{' '}
+                <EditableField
+                  editMode={editMode} id="cooktime"
+                  html={props.cooktime.toString()} onChange={handleEdit}/>
+                min </h5>
+            }
           </Row>
         </Col>
         <Col xs={6}>
           <Row>
-            { props.serves && <h5 className="pull-right">Serves {props.serves}</h5> }
+            { props.serves &&
+              <h5 className="pull-right">Serves{' '}
+                <EditableField
+                  editMode={editMode} id="serves"
+                  html={props.serves.toString()} onChange={handleEdit}/>
+              </h5>
+            }
           </Row>
         </Col>
         <Col xs={12}>
@@ -184,7 +210,11 @@ const RecipeCard = (props)  => {
     return(
       <div className="ingredients">
         <h3 className="text-center">Ingredients</h3>
-        <p>{props.ingredients}</p>
+        {/* <p></p> */}
+          <EditableField
+            editMode={editMode} id="ingredients"
+            html={props.ingredients.toString()} onChange={handleEdit}/>
+
       </div>
     )
   }
@@ -193,9 +223,17 @@ const RecipeCard = (props)  => {
     return(
       <div className="instructions">
         <h3 className="text-center">Instructions</h3>
-        <p>{props.method}</p>
+        <div>
+          <EditableField
+            editMode={editMode} id="method"
+            html={props.method} onChange={handleEdit}/>
+        </div>
         {props.notes &&
-        <p>Notes: {props.notes}</p>
+        <div>Notes:{' '}
+          <EditableField
+            editMode={editMode} id="notes"
+            html={props.notes} onChange={handleEdit}/>
+        </div>
         }
       </div>
     )

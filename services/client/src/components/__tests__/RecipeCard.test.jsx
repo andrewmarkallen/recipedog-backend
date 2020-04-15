@@ -29,5 +29,5 @@ const location = { state: state }
 
 test('RecipeCard renders succesfully', ()  => {
   const wrapper = mount(<RecipeCard location={location}/>)
-  expect(wrapper.contains(<div id="title">Mushroom Toast</div>)).toEqual(true)
+  expect(wrapper.contains(<span id="title">Mushroom Toast</span>)).toEqual(true)
 })
