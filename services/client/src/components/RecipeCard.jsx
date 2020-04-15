@@ -10,7 +10,7 @@ import axios from 'axios'
 var modifiedProperties = {}
 
 // Handles all property editing
-const handleContentEditable = (event) => {
+const handleEdit = (event) => {
 
   // The element is suffixed with '-editable' which we strip off
   var id = event.currentTarget.id.split("-")[0]
@@ -90,6 +90,22 @@ const RecipeCard = (props)  => {
     )
   }
 
+  const EditableField = (props)  => {
+
+    return(
+      <div className="editableField">
+      { props.editMode &&
+        <ContentEditable
+          id={props.id + "-editable"}
+          html={props.html}
+          className="content-editable"
+          onChange={props.onChange}/>
+      }
+      { !editMode && <span id={props.id}>{props.html}</span> }
+      </div>
+    )
+  }
+
   const RecipeTitle = (props)  => {
 
     return(
@@ -97,20 +113,12 @@ const RecipeCard = (props)  => {
       <Jumbotron>
         {props.tags && props.tags.map((tag) => {return <Tag tag={tag}/>})}
         <Favourite favourite={props.favourite}/>
-
         <h1 className="text-center">
-        { editMode &&
-            <ContentEditable
-              id="title-editable"
-              html={props.title}
-              className="content-editable"
-              onChange={handleContentEditable}
-            />
-        }
-        { !editMode && <div id="title">{props.title}</div> }
+          <EditableField
+            editMode={editMode} id="title"
+            html={props.title} onChange={handleEdit}/>
         </h1>
         <EditButton/>
-
       </Jumbotron>
     )
   }
