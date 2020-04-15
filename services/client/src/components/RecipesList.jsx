@@ -28,7 +28,7 @@ const RecipesList = (props)  => {
         .then((res)  => {
           var newTags = Object.assign({}, tags)
           newTags[recipe.id] = res.data.data
-          setTags(newTags)
+          setTags(tags  => { return {...tags, ...newTags} })
           return res.data.data
         })
       }
@@ -67,9 +67,9 @@ const RecipesList = (props)  => {
         </thead>
         <tbody>
           {
-            props.recipes.map((recipe)  => {
+            props.recipes.map((recipe, index)  => {
               return (
-                <tr key={recipe.id}>
+                <tr key={index} id={recipe.id}>
                   <td>
                       <Link to={
                         {
