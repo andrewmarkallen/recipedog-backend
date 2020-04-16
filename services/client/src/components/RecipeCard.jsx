@@ -4,6 +4,7 @@ import { users_service_url } from './Util'
 import ChangesSavedModal from './ChangesSavedModal'
 import ContentEditable from 'react-contenteditable'
 import axios from 'axios'
+import { useDropzone } from 'react-dropzone'
 
 // import styled from 'styled-components'
 
@@ -80,13 +81,12 @@ const RecipeCard = (props)  => {
 
     var glyph = "glyphicon glyphicon-check"
     return(
-        <Button
-          onClick={handleClick}
-          id="done-editing"
-        >
-          Done Editing
-          <span className={glyph} aria-hidden="true"></span>
-        </Button>
+        <div className="doneEditingButton">
+          <Button onClick={handleClick} id="done-editing">
+            Done Editing
+            <span className={glyph} aria-hidden="true"></span>
+          </Button>
+        </div>
     )
   }
 
@@ -197,7 +197,11 @@ const RecipeCard = (props)  => {
           </Row>
         </Col>
         <Col xs={12}>
-          <div><h4 className="text-center">{props.description}</h4></div>
+          <div><h4 className="text-center">
+            <EditableField
+              editMode={editMode} id="description"
+              html={props.description} onChange={handleEdit}/>
+          </h4></div>
         </Col>
         <Col xs={12}>
           <div><h4 className="text-center">{props.date}</h4></div>
@@ -247,7 +251,6 @@ const RecipeCard = (props)  => {
           <Col xs={12} md={6} mdOffset={3}>
             <Row>
               <RecipeTitle
-                id = "title"
                 tags={tags}
                 title={recipe.title}
                 favourite={recipe.favourite}
@@ -258,7 +261,6 @@ const RecipeCard = (props)  => {
             </Row>
             <Row>
               <RecipeDescription
-                id="decription"
                 preptime={recipe.preptime}
                 cooktime={recipe.cooktime}
                 serves={recipe.serves}
@@ -275,9 +277,7 @@ const RecipeCard = (props)  => {
           </Col>
         </Grid>
       </div>
-      <div className="doneEditingButton">
-      <DoneEditingButton />
-      </div>
+      <DoneEditingButton/>
       <ChangesSavedModal show={editsSaved} />
   </div>
   )
