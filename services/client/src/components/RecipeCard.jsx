@@ -4,7 +4,7 @@ import { users_service_url } from './Util'
 import ChangesSavedModal from './ChangesSavedModal'
 import ContentEditable from 'react-contenteditable'
 import axios from 'axios'
-import { useDropzone } from 'react-dropzone'
+import ImageDropzone from './ImageDropzone'
 
 // import styled from 'styled-components'
 
@@ -15,11 +15,8 @@ const handleEdit = (event) => {
 
   // The element is suffixed with '-editable' which we strip off
   var id = event.currentTarget.id.split("-")[0]
-  var value = event.target.value
-
-  modifiedProperties[id] = value
+  modifiedProperties[id] = event.target.value
 }
-
 
 const RecipeCard = (props)  => {
 
@@ -50,14 +47,12 @@ const RecipeCard = (props)  => {
         setRecipe(combined)
        })
       .catch((err)  => { console.log(err)})
-
   }
 
   const EditButton = (props)  => {
 
     const handleClick = ()  => {
       setEditMode(true)
-      console.log(editMode)
     }
 
     var glyph = "glyphicon glyphicon-pencil"
@@ -81,12 +76,12 @@ const RecipeCard = (props)  => {
 
     var glyph = "glyphicon glyphicon-check"
     return(
-        <div className="doneEditingButton">
-          <Button onClick={handleClick} id="done-editing">
-            Done Editing
-            <span className={glyph} aria-hidden="true"></span>
-          </Button>
-        </div>
+      <div className="doneEditingButton">
+        <Button onClick={handleClick} id="done-editing">
+          Done Editing
+          <span className={glyph} aria-hidden="true"></span>
+        </Button>
+      </div>
     )
   }
 
@@ -109,7 +104,6 @@ const RecipeCard = (props)  => {
   const RecipeTitle = (props)  => {
 
     return(
-
       <Jumbotron>
         {props.tags && props.tags.map((tag, index) => {
           return <Tag key={index} tag={tag}/>
@@ -150,6 +144,15 @@ const RecipeCard = (props)  => {
   }
 
   const RecipeImage = (props)  => {
+
+    const [imageEditMode, setImageEditMode] = useState(false)
+    const [ready, setReady] = useState(false)
+    const [newImage, setNewImage] = useState(null)
+
+    const handleClick = ()  => {
+      setImageEditMode(true)
+    }
+
     let image = props.image
     if(image === "")
     {
@@ -157,12 +160,36 @@ const RecipeCard = (props)  => {
     }
     const url = `${users_service_url}/images/${image}`
     return(
-      <Image src={url} responsive />
+      <div>
+        { !imageEditMode &&
+          <div>
+            <Image src={url} responsive />
+            <Button id="edit-image" onClick={handleClick}>Edit Image</Button>
+          </div>
+        }
+        { imageEditMode &&
+          <div>
+            <ImageDropzone
+            handleImageUpload={()  => {setReady(true)}}
+            setFilename={newImage  => setNewImage(newImage)}
+            />
+            <Button id="edit-image" onClick={() => {
+              if(ready)
+              {
+                processModifiedValues({image: newImage})
+                setReady(false)
+                setImageEditMode(false)
+              }
+            }}>
+              Done
+            </Button>
+          </div>
+        }
+      </div>
     )
   }
 
   const RecipeDescription = (props)  => {
-    console.log('date', props.date)
     return(
       <div className="description">
         <Col xs={6}>
@@ -214,11 +241,9 @@ const RecipeCard = (props)  => {
     return(
       <div className="ingredients">
         <h3 className="text-center">Ingredients</h3>
-        {/* <p></p> */}
           <EditableField
             editMode={editMode} id="ingredients"
             html={props.ingredients.toString()} onChange={handleEdit}/>
-
       </div>
     )
   }
@@ -242,7 +267,6 @@ const RecipeCard = (props)  => {
       </div>
     )
   }
-
 
   return(
     <div className="recipecard">
