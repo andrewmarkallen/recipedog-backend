@@ -19,6 +19,7 @@ services:
       - users
     links:
       - users
+    stdin_open: true
 
   nginx:
     container_name: nginx

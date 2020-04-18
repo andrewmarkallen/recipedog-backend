@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
 import {Button, Col, Jumbotron, Image, Grid, Row } from 'react-bootstrap'
-import { users_service_url } from './Util'
+import { users_service_url, delete_tag, add_tag } from './Util'
 import ChangesSavedModal from './ChangesSavedModal'
 import ContentEditable from 'react-contenteditable'
 import axios from 'axios'
 import ImageDropzone from './ImageDropzone'
+import Chips from 'react-chips'
 
 // import styled from 'styled-components'
 
@@ -47,6 +48,17 @@ const RecipeCard = (props)  => {
         setRecipe(combined)
        })
       .catch((err)  => { console.log(err)})
+  }
+
+  function processTags(newTags) {
+    // Make changes to UI first
+    setTags(newTags)
+    // Then make changes to back end
+    const insertions = newTags.filter(el  => !tags.includes(el))
+    const deletions = tags.filter(el  => !newTags.includes(el))
+
+    insertions.map((tag)  => axios(add_tag(recipe.id, tag)))
+    deletions.map((tag)  => axios(delete_tag(recipe.id, tag)))
   }
 
   const EditButton = (props)  => {
@@ -105,9 +117,14 @@ const RecipeCard = (props)  => {
 
     return(
       <Jumbotron>
-        {props.tags && props.tags.map((tag, index) => {
-          return <Tag key={index} tag={tag}/>
-        })}
+        { props.tags &&
+          <Chips
+            value={props.tags}
+            onChange={processTags}
+            createChipKeys={[13,',']}
+            placeholder="add some tags"
+          />
+        }
         <Favourite favourite={props.favourite}/>
         <h1 className="text-center">
           <EditableField
@@ -116,13 +133,6 @@ const RecipeCard = (props)  => {
         </h1>
         <EditButton/>
       </Jumbotron>
-    )
-  }
-
-  const Tag = (props)  => {
-    console.log(props)
-    return(
-      <div>{props.tag}</div>
     )
   }
 

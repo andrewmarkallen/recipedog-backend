@@ -10,6 +10,7 @@
     "bootswatch": "^4.4.1",
     "react": "^16.12.0",
     "react-bootstrap": "^0.32.1",
+    "react-chips": "^0.8.0",
     "react-contenteditable": "^3.3.3",
     "react-dom": "^16.12.0",
     "react-dropzone": "^10.2.1",
