@@ -149,6 +149,14 @@ class Recipe(db.Model):
     def getTags(self):
         return [t.tag for t in self.tags]
 
+    def deleteTag(self, name):
+        if name not in [t.tag.name for t in self.tags]:
+            return None
+        else:
+            [db.session.delete(t) for t in self.tags if t.tag.name == name]
+            db.session.commit()
+            return name
+
     def __init__(self, **kwargs):
         tags = map(str.strip, kwargs.pop('tags', '').split(','))
 

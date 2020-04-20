@@ -119,6 +119,7 @@ const RecipeCard = (props)  => {
       <Jumbotron>
         { props.tags &&
           <Chips
+            id="tagbox"
             value={props.tags}
             onChange={processTags}
             createChipKeys={[13,',']}

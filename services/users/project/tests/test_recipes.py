@@ -130,7 +130,7 @@ class TestRecipesBlueprint(BaseTestCase):
         # should receive meaningful response
         self.assertEqual(response.status_code, 404)
         data = json.loads(response.data.decode())
-        self.assertEqual(data['message'], 'Error: parameter does not exist')
+        self.assertEqual(data['message'], 'parameter does not exist')
 
     def test_can_edit_multiple_parameters(self):
         update = {
@@ -190,6 +190,89 @@ class TestRecipesBlueprint(BaseTestCase):
             #  tags must be retrieved separately afterwards
             self.assertEqual(recipe[key], recipe_one_no_tags[key])
 
+    def test_tags_api_add_tag(self):
+        # register and log in
+        add_user('test', 'test@test.com', 'test')
+        response = login_user('test@test.com', 'test')
+        token = json.loads(response.data.decode())['auth_token']
+        # post a new recipe
+        response = self.post_recipe(token, recipe_one_with_tags)
+        self.assertEqual(response.status_code, 201)
+        recipe_id = json.loads(response.data.decode())['id']
+        # attempt to add a new tag
+        response = self.post_tag(token, recipe_id, 'new_tag')
+        self.assertEqual(response.status_code, 201)
+        # check that tag was added
+        response = self.get_tags(token, recipe_id)
+        tags = json.loads(response.data.decode())['data']
+        self.assertIn('new_tag', tags)
+
+    def test_tags_api_delete_tag(self):
+        # register and log in
+        add_user('test', 'test@test.com', 'test')
+        response = login_user('test@test.com', 'test')
+        token = json.loads(response.data.decode())['auth_token']
+        # post a new recipe
+        response = self.post_recipe(token, recipe_one_with_tags)
+        self.assertEqual(response.status_code, 201)
+        recipe_id = json.loads(response.data.decode())['id']
+        # try and delete a tag
+        response = self.delete_tag(token, recipe_id, 'dinner')
+        self.assertEqual(response.status_code, 200)
+        # check tag was deleted
+        response = self.get_tags(token, recipe_id)
+        tags = json.loads(response.data.decode())['data']
+        self.assertNotIn('dinner', tags)
+        self.assertIn('crowd-pleaser', tags)
+        self.assertEqual(1, len(tags))
+
+    def test_tags_api_delete_nonexistent_tag(self):
+        # register and log in
+        add_user('test', 'test@test.com', 'test')
+        response = login_user('test@test.com', 'test')
+        token = json.loads(response.data.decode())['auth_token']
+        # post a new recipe
+        response = self.post_recipe(token, recipe_one_with_tags)
+        self.assertEqual(response.status_code, 201)
+        recipe_id = json.loads(response.data.decode())['id']
+        # try and delete a tag
+        response = self.delete_tag(token, recipe_id, 'dinnnnnnner')
+        self.assertEqual(response.status_code, 404)
+        data = json.loads(response.data.decode())
+        self.assertEqual(data['message'], 'tag does not exist')
+        # check nothing was deleted
+        response = self.get_tags(token, recipe_id)
+        tags = json.loads(response.data.decode())['data']
+        self.assertIn('dinner', tags)
+        self.assertIn('crowd-pleaser', tags)
+        self.assertEqual(2, len(tags))
+
+    def test_tags_api_add_already_existing_tag(self):
+        # register and log in
+        add_user('test', 'test@test.com', 'test')
+        response = login_user('test@test.com', 'test')
+        token = json.loads(response.data.decode())['auth_token']
+        # post a new recipe
+        response = self.post_recipe(token, recipe_one_with_tags)
+        self.assertEqual(response.status_code, 201)
+        recipe_id = json.loads(response.data.decode())['id']
+        # attempt to add a new tag
+        response = self.post_tag(token, recipe_id, 'new_tag')
+        self.assertEqual(response.status_code, 201)
+        # check that tag was added
+        response = self.get_tags(token, recipe_id)
+        tags = json.loads(response.data.decode())['data']
+        self.assertIn('new_tag', tags)
+        self.assertEqual(3, len(tags))
+        # try to re-add tag
+        response = self.post_tag(token, recipe_id, 'new_tag')
+        self.assertEqual(response.status_code, 409)
+        # check we still only have three tags
+        response = self.get_tags(token, recipe_id)
+        tags = json.loads(response.data.decode())['data']
+        self.assertIn('new_tag', tags)
+        self.assertEqual(3, len(tags))
+
     def put_update(self, token, recipe_id, update):
         with self.client:
             response = self.client.put(
@@ -230,6 +313,26 @@ class TestRecipesBlueprint(BaseTestCase):
                 '/recipes',
                 headers={'Authorization': f'Bearer {token}'},
                 data=json.dumps(recipe),
+                content_type='application/json'
+            )
+            return response
+
+    def post_tag(self, token, recipe_id, tag):
+        with self.client:
+            response = self.client.post(
+                f'/recipes/{recipe_id}/tag',
+                headers={'Authorization': f'Bearer {token}'},
+                data=json.dumps({"tag": tag}),
+                content_type='application/json'
+            )
+            return response
+
+    def delete_tag(self, token, recipe_id, tag):
+        with self.client:
+            response = self.client.delete(
+                f'/recipes/{recipe_id}/tag',
+                headers={'Authorization': f'Bearer {token}'},
+                data=json.dumps({"tag": tag}),
                 content_type='application/json'
             )
             return response
