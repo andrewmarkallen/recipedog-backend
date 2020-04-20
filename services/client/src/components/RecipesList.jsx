@@ -1,6 +1,6 @@
 import React, { useState,  useEffect } from 'react'
 import { Table } from 'react-bootstrap'
-import { users_service_url} from './Util'
+import { users_service_url, get_tags, get_image_url } from './Util'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 
@@ -16,15 +16,7 @@ const RecipesList = (props)  => {
       if (recipe.id === undefined) { return 'loading' }
       else
       {
-        const options = {
-          url: `${users_service_url}/recipes/${recipe.id}/tags`,
-          method: 'get',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${window.localStorage.authToken}`
-          }
-        }
-        return axios(options)
+        return axios(get_tags(recipe.id))
         .then((res)  => {
           var newTags = Object.assign({}, tags)
           newTags[recipe.id] = res.data.data
@@ -35,14 +27,13 @@ const RecipesList = (props)  => {
     })
   }
 
-  function imageTag(image_url, title) {
-    if(image_url) {
-      const url = users_service_url + '/images/' + image_url
+  function imageTag(filename, title) {
       return (
-        <img alt={title} src={url} width="100"></img>
+        <div className="imageTag">
+        { filename && <img alt={title} src={get_image_url(filename)} width="100"></img> }
+        { !filename && <span>no image</span> }
+      </div>
       )
-    }
-    else return(<span>no image</span>)
   }
 
   return (
