@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import {Button, Col, Jumbotron, Image, Grid, Row } from 'react-bootstrap'
-import { users_service_url, delete_tag, add_tag } from './Util'
+import { users_service_url, delete_tag, add_tag, put_recipe } from './Util'
 import ChangesSavedModal from './ChangesSavedModal'
 import ContentEditable from 'react-contenteditable'
 import axios from 'axios'
@@ -28,16 +28,16 @@ const RecipeCard = (props)  => {
   const [editsSaved, setEditsSaved] = useState(false)
 
   function processModifiedValues(properties) {
-      const options = {
-        url: `${users_service_url}/recipes/${recipe.id}`,
-        method: 'put',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${window.localStorage.authToken}`
-        },
-        data: properties
-      }
-      axios(options).then((res)  => {
+      // const options = {
+      //   url: `${users_service_url}/recipes/${recipe.id}`,
+      //   method: 'put',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //     Authorization: `Bearer ${window.localStorage.authToken}`
+      //   },
+      //   data: properties
+      // }
+      axios(put_recipe(recipe.id, properties)).then((res)  => {
         const keys = Object.keys(properties)
         // Don't show modal if we set favourite
         if(!(keys.length === 1 && keys[0] === 'favourite'))
