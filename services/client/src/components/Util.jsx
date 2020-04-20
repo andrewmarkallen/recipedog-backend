@@ -10,6 +10,14 @@ export const auth_json = {
   Authorization: `Bearer ${window.localStorage.authToken}`
 }
 
+export const get_image_url_with_fallback = (filename)  => {
+  if (!filename)
+  {
+    return get_image_url("none.png")
+  }
+  return get_image_url(filename)
+}
+
 export const axios_options = (url, method, headers, data=undefined)  => {
   const options = {
     url: url,

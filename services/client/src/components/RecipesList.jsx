@@ -1,6 +1,6 @@
 import React, { useState,  useEffect } from 'react'
 import { Table } from 'react-bootstrap'
-import { users_service_url, get_tags, get_image_url } from './Util'
+import { get_tags, get_image_url } from './Util'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 

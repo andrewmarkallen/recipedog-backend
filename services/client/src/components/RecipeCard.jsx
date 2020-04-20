@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import {Button, Col, Jumbotron, Image, Grid, Row } from 'react-bootstrap'
-import { users_service_url, delete_tag, add_tag, put_recipe } from './Util'
+import {  delete_tag, add_tag, put_recipe,
+          get_image_url_with_fallback } from './Util'
 import ChangesSavedModal from './ChangesSavedModal'
 import ContentEditable from 'react-contenteditable'
 import axios from 'axios'
@@ -28,22 +29,11 @@ const RecipeCard = (props)  => {
   const [editsSaved, setEditsSaved] = useState(false)
 
   function processModifiedValues(properties) {
-      // const options = {
-      //   url: `${users_service_url}/recipes/${recipe.id}`,
-      //   method: 'put',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //     Authorization: `Bearer ${window.localStorage.authToken}`
-      //   },
-      //   data: properties
-      // }
       axios(put_recipe(recipe.id, properties)).then((res)  => {
-        const keys = Object.keys(properties)
         // Don't show modal if we set favourite
-        if(!(keys.length === 1 && keys[0] === 'favourite'))
-        {
-          setEditsSaved(true)
-        }
+        const keys = Object.keys(properties)
+        if(!keys === ['favourite']) { setEditsSaved(true) }
+        // Combine new properties with existing recipe
         const combined = {...recipe, ...properties}
         setRecipe(combined)
        })
@@ -164,17 +154,11 @@ const RecipeCard = (props)  => {
       setImageEditMode(true)
     }
 
-    let image = props.image
-    if(image === "")
-    {
-      image = "none.png"
-    }
-    const url = `${users_service_url}/images/${image}`
     return(
       <div>
         { !imageEditMode &&
           <div>
-            <Image src={url} responsive />
+            <Image src={get_image_url_with_fallback(props.image)} responsive />
             <Button id="edit-image" onClick={handleClick}>Edit Image</Button>
           </div>
         }
