@@ -1,53 +1,62 @@
 import React from 'react'
-import { FormGroup, FormControl, Navbar, Nav, NavItem } from 'react-bootstrap'
+import { Button, FormGroup, FormControl, Navbar, Nav, NavItem, Modal } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
 
-const NavBar = (props)  => (
-  <Navbar inverse collapseOnSelect fixedTop={true}>
-
-    <Navbar.Form pullLeft>
-      <FormGroup>
-        <FormControl type="text" placeholder="Search" className="mr-sm-1" />
-      </FormGroup>
+const SearchButton = (props)  => {
+  var looking_glass = "glyphicon glyphicon-search"
+  return(
+    <Navbar.Form pullRight>
+      <Button
+        id="navbar-search"
+        onClick={()  => {}}
+        className="pull-right">
+        <span className={looking_glass} aria-hidden="true"></span>
+      </Button>
     </Navbar.Form>
+  )
+}
 
-    <Navbar.Header>
-      <Navbar.Toggle pullright="true" />
-    </Navbar.Header>
-    { <Navbar.Brand>
-      <span>{props.title}</span>
-    </Navbar.Brand> }
-    <Navbar.Collapse pullright="true">
-      <Nav>
-        <LinkContainer to="/">
-          <NavItem eventKey={1}>Home</NavItem>
-        </LinkContainer>
-        {props.isAuthenticated &&
-          <LinkContainer to="/myrecipes">
-          <NavItem eventKey={2}>Recipes</NavItem>
-        </LinkContainer>}
-        <LinkContainer to="/about">
-          <NavItem eventKey={3}>About</NavItem>
-        </LinkContainer>
-        {props.isAuthenticated &&
-          <LinkContainer to="/status">
-          <NavItem eventKey={4}>User Status</NavItem>
-        </LinkContainer>}
-        {!props.isAuthenticated &&
-          <LinkContainer to="/register">
-          <NavItem eventKey={1}>Register</NavItem>
-        </LinkContainer>}
-        {!props.isAuthenticated &&
-          <LinkContainer to="/login">
-          <NavItem eventKey={2}>Log In</NavItem>
-        </LinkContainer>}
-        {props.isAuthenticated &&
-          <LinkContainer to="/logout">
-          <NavItem eventKey={3}>Log Out</NavItem>
-        </LinkContainer>}
-      </Nav>
-    </Navbar.Collapse>
-  </Navbar>
-)
+const NavBar = (props)  => {
+
+  const handleClick = ()  => {
+    console.log("clickety")
+    var x = document.getElementById("myTopnav");
+      if (x.className === "fixed-nav-bar") {
+        x.className += " responsive";
+        console.log("adding")
+      } else {
+        x.className = "fixed-nav-bar";
+      }
+  }
+
+  const handleSearch = ()  => {
+    console.log('clickety')
+    return(<Modal>Coming Soon</Modal>)
+  }
+
+  return(
+    <nav className="fixed-nav-bar" id="myTopnav">
+      <div>
+      <a href="javascript:void(0);" className="icon" id="hamburger" onClick={handleClick}>
+        <i className="glyphicon glyphicon-menu-hamburger"></i></a>
+      <a href="javascript:void(0);" id="hamburger" onClick={handleClick}>
+        <i className="glyphicon glyphicon-menu-hamburger"></i></a>
+      <a href="/" className="active">Home</a>
+      {props.isAuthenticated && <a href="/myrecipes" >Recipes</a> }
+      <a href="/about">About</a>
+      {props.isAuthenticated && <a href="/status">User Status</a>}
+      {!props.isAuthenticated && <a href="/register">Register</a>}
+      {!props.isAuthenticated && <a href="/login">Log In</a>}
+      {props.isAuthenticated && <a href="/logout">Log Out</a>}
+
+    </div>
+      <div id="navbar-brand" onClick={()  => {console.log('clickety')}}>RecipeDog</div>
+      <a href="javascript:void(0);" className="icon" onClick={handleSearch} id="navbar-search">
+        <i className="glyphicon glyphicon-search"></i>
+      </a>
+    </nav>
+
+  )
+}
 
 export default NavBar

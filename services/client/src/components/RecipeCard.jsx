@@ -235,7 +235,7 @@ const RecipeCard = (props)  => {
   const RecipeIngredients = (props)  => {
     return(
       <div className="ingredients">
-        <h3 className="text-center">Ingredients</h3>
+        <h3 className="text-center" id="ingredients-heading">Ingredients</h3>
           <EditableField
             editMode={editMode} id="ingredients"
             html={props.ingredients.toString()} onChange={handleEdit}/>
@@ -246,7 +246,7 @@ const RecipeCard = (props)  => {
   const RecipeInstructions = (props)  => {
     return(
       <div className="instructions">
-        <h3 className="text-center">Instructions</h3>
+        <h3 className="text-center" id="instructions-heading">Instructions</h3>
         <div>
           <EditableField
             editMode={editMode} id="method"
