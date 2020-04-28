@@ -1,22 +1,32 @@
-import React from 'react'
-import { Button, FormGroup, FormControl, Navbar, Nav, NavItem, Modal } from 'react-bootstrap'
-import { LinkContainer } from 'react-router-bootstrap'
+import React, { useState } from 'react'
+import { Redirect } from 'react-router-dom'
+import { Button, FormControl, Glyphicon, FormGroup, InputGroup, Modal } from 'react-bootstrap'
 
-const SearchButton = (props)  => {
-  var looking_glass = "glyphicon glyphicon-search"
+const SearchModal = (props)  => {
+
   return(
-    <Navbar.Form pullRight>
-      <Button
-        id="navbar-search"
-        onClick={()  => {}}
-        className="pull-right">
-        <span className={looking_glass} aria-hidden="true"></span>
-      </Button>
-    </Navbar.Form>
+      <Modal id="search-modal" show={props.show} onHide={props.handleCloseSearch}>
+      <Modal.Header closeButton id="search-header">
+        <h1>Search by title and tags</h1>
+      </Modal.Header>
+      <Modal.Body>
+        <FormGroup>
+          <InputGroup classname="search-group">
+            <FormControl bsSize="large" type="text" placeholder="enter search terms..."/>
+            <InputGroup.Button>
+              <Button bsSize="large"><Glyphicon glyph="search"/></Button>
+            </InputGroup.Button>
+          </InputGroup>
+        </FormGroup>
+      </Modal.Body>
+    </Modal>
   )
 }
 
 const NavBar = (props)  => {
+
+  const[redirect, setRedirect] = useState(false)
+  const[showSearch, setShowSearch] = useState(false)
 
   const handleClick = ()  => {
     console.log("clickety")
@@ -29,32 +39,34 @@ const NavBar = (props)  => {
       }
   }
 
-  const handleSearch = ()  => {
-    console.log('clickety')
-    return(<Modal>Coming Soon</Modal>)
-  }
+  const handleCloseSearch = () => { setShowSearch(false)}
+
 
   return(
-    <nav className="fixed-nav-bar" id="myTopnav">
-      <div>
-      <a href="javascript:void(0);" className="icon" id="hamburger" onClick={handleClick}>
-        <i className="glyphicon glyphicon-menu-hamburger"></i></a>
-      <a href="javascript:void(0);" id="hamburger" onClick={handleClick}>
-        <i className="glyphicon glyphicon-menu-hamburger"></i></a>
-      <a href="/" className="active">Home</a>
-      {props.isAuthenticated && <a href="/myrecipes" >Recipes</a> }
-      <a href="/about">About</a>
-      {props.isAuthenticated && <a href="/status">User Status</a>}
-      {!props.isAuthenticated && <a href="/register">Register</a>}
-      {!props.isAuthenticated && <a href="/login">Log In</a>}
-      {props.isAuthenticated && <a href="/logout">Log Out</a>}
+    <div>
+      { redirect && <Redirect to="/"/> }
+      <SearchModal show={showSearch} handleCloseSearch={handleCloseSearch}/>
+      <nav className="fixed-nav-bar" id="myTopnav">
+        <div>
+        <button className="icon" id="hamburger" onClick={handleClick}>
+          <i className="glyphicon glyphicon-menu-hamburger"></i></button>
+        <button id="hamburger" onClick={handleClick}>
+          <i className="glyphicon glyphicon-menu-hamburger"></i></button>
+        <a href="/" className="active">Home</a>
+        {props.isAuthenticated && <a href="/myrecipes" >Recipes</a> }
+        <a href="/about">About</a>
+        {props.isAuthenticated && <a href="/status">User Status</a>}
+        {!props.isAuthenticated && <a href="/register">Register</a>}
+        {!props.isAuthenticated && <a href="/login">Log In</a>}
+        {props.isAuthenticated && <a href="/logout">Log Out</a>}
 
+      </div>
+        <div id="navbar-brand" onClick={()=>setRedirect(true)}> RecipeDog</div>
+        <button className="icon" onClick={()=>setShowSearch(true)} id="navbar-search">
+          <i className="glyphicon glyphicon-search"></i>
+        </button>
+      </nav>
     </div>
-      <div id="navbar-brand" onClick={()  => {console.log('clickety')}}>RecipeDog</div>
-      <a href="javascript:void(0);" className="icon" onClick={handleSearch} id="navbar-search">
-        <i className="glyphicon glyphicon-search"></i>
-      </a>
-    </nav>
 
   )
 }

@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {Button, Col, Jumbotron, Image, Grid, Row } from 'react-bootstrap'
 import {  delete_tag, add_tag, put_recipe,
-          get_image_url_with_fallback } from './Util'
+          get_image_url_with_fallback, get_tags } from './Util'
 import ChangesSavedModal from './ChangesSavedModal'
 import ContentEditable from 'react-contenteditable'
 import axios from 'axios'
@@ -20,13 +20,19 @@ const handleEdit = (event) => {
   modifiedProperties[id] = event.target.value
 }
 
+const load_tags = (id, setTags)  => {
+  if(id)
+    axios(get_tags(id)).then((res)  => { setTags(res.data.data) })
+}
+
 const RecipeCard = (props)  => {
 
-  console.log(props.location.state)
-  const [recipe, setRecipe] = useState(props.location.state.recipe)
-  const [tags, setTags] = useState(props.location.state.tags)
-  const [editMode, setEditMode] = useState(false)
-  const [editsSaved, setEditsSaved] = useState(false)
+    const [recipe, setRecipe] = useState(props.location.state.recipe)
+    const [tags, setTags] = useState([])
+    const [editMode, setEditMode] = useState(false)
+    const [editsSaved, setEditsSaved] = useState(false)
+
+    useEffect(()  => {load_tags(recipe.id, setTags)}, [recipe])
 
   function processModifiedValues(properties) {
       axios(put_recipe(recipe.id, properties)).then((res)  => {
@@ -52,18 +58,10 @@ const RecipeCard = (props)  => {
   }
 
   const EditButton = (props)  => {
-
-    const handleClick = ()  => {
-      setEditMode(true)
-    }
-
-    var glyph = "glyphicon glyphicon-pencil"
     return(
-      <Button
-        id="edit-button"
-        onClick={handleClick}
-        className="pull-right">Edit Recipe
-        <span className={glyph} aria-hidden="true"></span>
+      <Button id="edit-button" onClick={()=>setEditMode(true)}
+        className="pull-right">
+        <span className="glyphicon glyphicon-pencil" aria-hidden="true"></span>
       </Button>
     )
   }
@@ -108,19 +106,13 @@ const RecipeCard = (props)  => {
     return(
       <Jumbotron>
         { props.tags &&
-          <Chips
-            id="tagbox"
-            value={props.tags}
-            onChange={processTags}
-            createChipKeys={[13,',']}
-            placeholder="add some tags"
-          />
+          <Chips id="tagbox" value={props.tags} onChange={processTags}
+            createChipKeys={[13,',']} placeholder="add some tasty tags"/>
         }
         <Favourite favourite={props.favourite}/>
         <h1 className="text-center">
-          <EditableField
-            editMode={editMode} id="title"
-            html={props.title} onChange={handleEdit}/>
+          <EditableField editMode={editMode} id="title"
+          html={props.title} onChange={handleEdit}/>
         </h1>
         <EditButton/>
       </Jumbotron>
@@ -129,16 +121,15 @@ const RecipeCard = (props)  => {
 
   const Favourite = (props)  => {
 
-    const handleClick = ()  => {
+    var glyph = "glyphicon glyphicon-star-empty"
+    if(props.favourite) { glyph = "glyphicon glyphicon-star" }
+
+    const handleClick = () => {
       processModifiedValues({'favourite': !props.favourite})
     }
 
-    console.log(props)
-    var glyph = "glyphicon glyphicon-star-empty"
-    if(props.favourite) { glyph = "glyphicon glyphicon-star" }
     return(
-      <Button className="pull-left"
-              onClick={handleClick}>
+      <Button id="favourite" className="pull-left" onClick={handleClick}>
         <span className={glyph} aria-hidden="true"></span>
       </Button>
     )
@@ -158,7 +149,10 @@ const RecipeCard = (props)  => {
       <div>
         { !imageEditMode &&
           <div>
-            <Image src={get_image_url_with_fallback(props.image)} responsive />
+            <Image src={get_image_url_with_fallback(props.image)}
+              modid={props.id % 12 }
+              id="recipecard-image"
+              responsive />
             <Button id="edit-image" onClick={handleClick}>Edit Image</Button>
           </div>
         }
@@ -189,31 +183,33 @@ const RecipeCard = (props)  => {
       <div className="description">
         <Col xs={6}>
           <Row>
-            { props.preptime &&
+            { (editMode || props.preptime) &&
               <h5 id="preptime-field">
                 Preparation time:{' '}
                 <EditableField
                   editMode={editMode} id="preptime"
-                  html={props.preptime.toString()} onChange={handleEdit}/>
+                  html={props.preptime ? props.preptime.toString() : ''}
+                  onChange={handleEdit}/>
                 min </h5>
             }
-            { props.cooktime &&
+            { (editMode || props.cooktime) &&
               <h5 id="cooktime-field">
                 Cooking time:{' '}
                 <EditableField
                   editMode={editMode} id="cooktime"
-                  html={props.cooktime.toString()} onChange={handleEdit}/>
+                  html={props.cooktime ? props.cooktime.toString() : ''}
+                  onChange={handleEdit}/>
                 min </h5>
             }
           </Row>
         </Col>
         <Col xs={6}>
           <Row>
-            { props.serves &&
+            { (editMode || props.serves) &&
               <h5 className="pull-right">Serves{' '}
                 <EditableField
                   editMode={editMode} id="serves"
-                  html={props.serves.toString()} onChange={handleEdit}/>
+                  html={props.serves ? props.serves.toString() : ''} onChange={handleEdit}/>
               </h5>
             }
           </Row>
@@ -276,7 +272,7 @@ const RecipeCard = (props)  => {
               />
             </Row>
             <Row>
-              <RecipeImage image={recipe.image}/>
+              <RecipeImage image={recipe.image} id={recipe.id}/>
             </Row>
             <Row>
               <RecipeDescription

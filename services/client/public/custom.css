@@ -19,6 +19,8 @@
 font-family: 'Josefin Sans', sans-serif;
 font-size: 24pt;
 text-transform: uppercase;
+line-height: 1.5;
+display: block;
 }
 
 #instructions-heading, #ingredients-heading{
@@ -29,9 +31,8 @@ text-transform: uppercase;
 .navbar {
   font-family: 'Josefin Sans', sans-serif;
   text-transform: uppercase;
+  z-index: 9000;
 }
-
-
 
 h1 {
   font-family: 'Josefin Sans', sans-serif;
@@ -45,14 +46,14 @@ h1 {
   top: 0;
   width: 100%;
   height: 50px;
-  overflow: visible
-  z-index: 9999;
+  overflow: visible;
+  z-index: 9000;
   text-transform: uppercase;
   /* display: flex;
   flex-direction: column; */
 }
 
-.fixed-nav-bar a {
+.fixed-nav-bar a, button {
   float: left;
   display: block;
   color: #fcfcfc;
@@ -61,6 +62,10 @@ h1 {
   text-decoration: none;
   font-size: 17px;
   height: 100%
+  border-style: none;
+  border: none;
+  background: none;
+  z-index: 9000;
 }
 
 #navbar-search {
@@ -72,8 +77,8 @@ h1 {
 }
 
 @media screen {
-  .fixed-nav-bar a:not(:first-child) { display: none; }
-  .fixed-nav-bar a.icon {
+  .fixed-nav-bar a:not(:first-child), .fixed-nav-bar button:not(:first-child) { display: none; }
+  .fixed-nav-bar a.icon, .fixed-nav-bar button.icon {
     float: left;
     display: block;
     height: 50px;
@@ -82,16 +87,17 @@ h1 {
 
 @media screen {
   .fixed-nav-bar.responsive {
-    position: relative;
-    /* overflow: visible; */
+    position: fixed;
+    z-index: 9000;
   }
-  .fixed-nav-bar.responsive a.icon {
+
+  .fixed-nav-bar.responsive a.icon, .fixed-nav-bar.responsive button.icon {
     position: absolute;
     right: 0;
     top: 0;
   }
 
-  .fixed-nav-bar.responsive a {
+  .fixed-nav-bar.responsive a, .fixed-nav-bar.responsive button {
     float: none;
     display: block;
     text-align: left;
@@ -101,12 +107,12 @@ h1 {
   }
 }
 
-.fixed-nav-bar a:hover {
+.fixed-nav-bar a:hover, .fixed-nav-bar button:hover {
   background-color: #444;
 }
 
 #navbar-brand {
-  font-family: 'Josefin Sans', cursive;
+  font-family: 'Josefin Sans', sans-serif;
   color: #fcfcfc;
   text-transform: uppercase;
   position: absolute;
@@ -116,4 +122,113 @@ h1 {
   padding: 14px 16px;
   text-decoration: none;
   font-size: 17px;
+  height:50px;
+}
+
+.minicard {
+  height: 256px;
+  background-color: #ebebeb;
+  border-radius: 15px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.minicard-thumbnail {
+  width: 100%;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+  height: 128px;
+  display: block;
+}
+
+.minicard-title {
+  font-family: 'Roboto Slab', serif;
+  font-size: 18px;
+  padding-left: 10px;
+  padding-top: 5px;
+}
+
+.addnew {
+  border-style: dashed;
+  border-color: #444;
+  border-width: 3px;
+}
+
+#droppy > .container {
+  width: 100%;
+  position: relative;
+  top: -70px;
+  height: 100px;
+}
+
+#droppy {
+  position:relative;
+  top: 50px;
+}
+
+img { object-fit: cover; }
+
+img[src$="none2.png"][modid$="0"] { filter: hue-rotate(0deg); }
+img[src$="none2.png"][modid$="1"] { filter: hue-rotate(30deg); }
+img[src$="none2.png"][modid$="2"] { filter: hue-rotate(60deg); }
+img[src$="none2.png"][modid$="3"] { filter: hue-rotate(90deg); }
+img[src$="none2.png"][modid$="4"] { filter: hue-rotate(120deg); }
+img[src$="none2.png"][modid$="5"] { filter: hue-rotate(150deg); }
+img[src$="none2.png"][modid$="6"] { filter: hue-rotate(180deg); }
+img[src$="none2.png"][modid$="7"] { filter: hue-rotate(210deg); }
+img[src$="none2.png"][modid$="8"] { filter: hue-rotate(240deg); }
+img[src$="none2.png"][modid$="9"] { filter: hue-rotate(270deg); }
+img[src$="none2.png"][modid$="11"] { filter: hue-rotate(300deg); }
+img[src$="none2.png"][modid$="12"] { filter: hue-rotate(330deg); }
+
+#add-recipe-modal { z-index: 9999; }
+#search-modal { z-index: 9999; }
+
+.minicard-title {
+  display: -webkit-box;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+}
+
+#recipecard-image {
+  width: 100%;
+}
+
+#favourite {
+  background: none;
+  border: none;
+  font-size: 23px;
+  color: #FFFF33;
+  -webkit-text-stroke: 1.5px #333;
+}
+
+#edit-button {
+  background: none;
+  border: none;
+  font-size: 30px;
+}
+
+#edit-button:hover {
+  background: none;
+  border: none;
+  font-size: 30px;
+  color: cornflowerblue;
+}
+
+.form-group {
+    font-family: 'Roboto Slab', serif;
+    font-size: 18px;
+}
+
+#add-recipe-submit {
+}
+
+.add-recipe-toggle {
+  font-family: 'Roboto Slab', serif;
+  font-size: 18px;
+  position: absolute;
+  right: 15px;
+  top: 5px;
 }
