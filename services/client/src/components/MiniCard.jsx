@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { Col } from 'react-bootstrap'
-import { get_image_url_with_fallback, get_recipe_url } from './Util'
+import { Link, Redirect } from 'react-router-dom'
+import { Button, ButtonToolbar, Col, Modal } from 'react-bootstrap'
+import { get_image_url_with_fallback, get_recipe_url, delete_recipe } from './Util'
 import AddRecipeModal from './AddRecipeModal'
+import axios from 'axios'
 
 export const AddRecipeCard = (props)  => {
 
@@ -26,21 +27,72 @@ export const AddRecipeCard = (props)  => {
   )
 }
 
-const MiniCard = (props)  => {
+const DeleteButton = (props)  => {
+
+  const deleteRecipe = ()  => {
+    axios(delete_recipe(props.id))
+    .then(() => setRedirect(true))
+    .catch((err) =>console.log(err))
+    setRedirect(true)
+  }
+
+  const [redirect, setRedirect] = useState(false)
+  const [deleteModal, setDeleteModal] = useState(false)
 
   return(
-    <Col xs={12} sm={4} md={3} lg={3}>
-      <Link to={{
-        pathname: get_recipe_url(props.recipe.id),
-        state: {
-          recipe: props.recipe
+    <div>
+      { redirect && <Redirect to='/myrecipes'/>}
+      { !deleteModal &&
+        <span id="minicard-delete"
+        className="glyphicon glyphicon-remove"
+        onClick={() => setDeleteModal(true)}>
+        </span>
+      }
+      <Modal id="delete-modal" show={deleteModal} onHide={() => setDeleteModal(false)}>>
+        <Modal.Header closeButton>
+          <Modal.Title>
+            <h1>Delete this recipe?</h1>
+          </Modal.Title>
+          <Modal.Body>
+            <h2 id="delete-modal-title">{props.title}</h2>
+            <ButtonToolbar>
+              <Button id="del-buttons-primary" block
+                onClick={deleteRecipe}>Delete</Button>
+              <Button id="del-buttons" bsSize="large" block
+                onClick={() => setDeleteModal(false)}>Cancel</Button>
+            </ButtonToolbar>
+          </Modal.Body>
+        </Modal.Header>
+      </Modal>
+
+    </div>
+  )
+
+}
+
+const MiniCard = (props)  => {
+
+  const [showDelete, setShowDelete] = useState(false)
+
+  return(
+    <Col xs={12} sm={4} md={3} lg={3}
+      onMouseEnter={() => setShowDelete(true)}
+      onMouseLeave={() => setShowDelete(false)}
+    >
+      { showDelete &&
+        <DeleteButton title={props.recipe.title} id={props.recipe.id} /> }
+      <Link to={
+        {
+          pathname: get_recipe_url(props.recipe.id),
+          state: { recipe: props.recipe }
         }
-      }}>
+      }>
         <div className="minicard">
-          <img className="minicard-thumbnail"
+          <img src={get_image_url_with_fallback(props.recipe.image)}
+            className="minicard-thumbnail"
             alt={props.recipe.title}
-            modid={props.recipe.id % 12 }
-            src={get_image_url_with_fallback(props.recipe.image)}/>
+            modid={props.recipe.id? props.recipe.id % 12 : 0 }
+          />
           <div className="minicard-title">{props.recipe.title}</div>
         </div>
       </Link>

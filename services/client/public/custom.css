@@ -368,3 +368,47 @@ img[src$="none2.png"][modid$="12"] { filter: hue-rotate(330deg); }
 .minicard:hover {
   filter: brightness(90%);
 }
+
+
+
+#minicard-delete:hover {
+  color: red;
+}
+
+#minicard-delete {
+  display:inline;
+  color: tomato;
+  font-size: 24px;
+  -webkit-text-stroke: 1px #333;
+  position: absolute;
+  top: 5%;
+  right: 5%;
+  z-index: 4000;
+}
+
+#delete-modal {
+  position: fixed;
+  top: 200px;
+
+}
+
+#del-buttons {
+  font-family: 'Roboto Slab';
+  font-size: 18px;
+}
+
+#del-buttons-primary {
+  font-family: 'Roboto Slab';
+  font-size: 18px;
+  background-color: #ddf;
+}
+
+#delete-modal-title {
+  font-family: 'Roboto Slab', sans-serif;
+  font-size: 24px;
+  text-align: center;
+  padding-bottom: 25px;
+  padding-top: 25px;
+  margin-bottom: 60px;
+  background-color: lavender;
+}

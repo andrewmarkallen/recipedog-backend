@@ -1,115 +1,66 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`NavBar renders a snapshot properly 1`] = `
-<nav
-  className="navbar navbar-inverse navbar-fixed-top"
->
-  <div
-    className="container"
+<div>
+  <nav
+    className="fixed-nav-bar"
+    id="myTopnav"
   >
-    <div
-      className="navbar-form navbar-left"
-    >
-      <div
-        className="form-group"
-      >
-        <input
-          className="mr-sm-1 form-control"
-          placeholder="Search"
-          type="text"
-        />
-      </div>
-    </div>
-    <div
-      className="navbar-header"
-    >
+    <div>
       <button
-        className="navbar-toggle collapsed"
+        className="icon"
+        id="hamburger"
         onClick={[Function]}
-        pullright="true"
-        type="button"
       >
-        <span
-          className="sr-only"
-        >
-          Toggle navigation
-        </span>
-        <span
-          className="icon-bar"
-        />
-        <span
-          className="icon-bar"
-        />
-        <span
-          className="icon-bar"
+        <i
+          className="glyphicon glyphicon-menu-hamburger"
         />
       </button>
-    </div>
-    <span
-      className="navbar-brand"
-    >
-      Hello, World!
-    </span>
-    <div
-      aria-expanded={null}
-      className="navbar-collapse collapse"
-      pullright="true"
-    >
-      <ul
-        className="nav navbar-nav"
-        role={null}
+      <button
+        id="hamburger"
+        onClick={[Function]}
       >
-        <li
-          className="active"
-          role="presentation"
-          style={Object {}}
-        >
-          <a
-            href="/"
-            onClick={[Function]}
-            onKeyDown={[Function]}
-          >
-            Home
-          </a>
-        </li>
-        <li
-          className=""
-          role="presentation"
-        >
-          <a
-            href="/about"
-            onClick={[Function]}
-            onKeyDown={[Function]}
-          >
-            About
-          </a>
-        </li>
-        <li
-          className=""
-          role="presentation"
-        >
-          <a
-            href="/register"
-            onClick={[Function]}
-            onKeyDown={[Function]}
-          >
-            Register
-          </a>
-        </li>
-        <li
-          className=""
-          role="presentation"
-        >
-          <a
-            href="/login"
-            onClick={[Function]}
-            onKeyDown={[Function]}
-          >
-            Log In
-          </a>
-        </li>
-      </ul>
+        <i
+          className="glyphicon glyphicon-menu-hamburger"
+        />
+      </button>
+      <a
+        className="active"
+        href="/"
+      >
+        Home
+      </a>
+      <a
+        href="/about"
+      >
+        About
+      </a>
+      <a
+        href="/register"
+      >
+        Register
+      </a>
+      <a
+        href="/login"
+      >
+        Log In
+      </a>
     </div>
-  </div>
-</nav>
+    <div
+      id="navbar-brand"
+      onClick={[Function]}
+    >
+       RecipeDog
+    </div>
+    <button
+      className="icon"
+      id="navbar-search"
+      onClick={[Function]}
+    >
+      <i
+        className="glyphicon glyphicon-search"
+      />
+    </button>
+  </nav>
+</div>
 `;

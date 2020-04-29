@@ -14,15 +14,15 @@ test(`should allow a user to edit tags`, async(t)  => {
   //add a new recipe
   await t
     .navigateTo(`${TEST_URL}/myrecipes`)
+    .click(Selector('div[class="minicard addnew"]'))
     .typeText('input[name="title"]', title)
     .typeText('input[name="description"]', 'desc')
     .typeText('input[name="tags"]', 'hot, lunch')
     .click(Selector('button[type="submit"]'))
   //new recipe should be displayed
-  const tableRow = Selector('td').withText(title).parent()
   await t
-    .click(Selector('a').withText(title))
-    .expect(Selector('div').withText(title).exists).ok()
+    .click(Selector('div[class="minicard-title"]').withText(title))
+    // .expect(Selector('span').withText(title).exists).ok()
     .expect(Selector('div').withText('hot').exists).ok()
     .expect(Selector('div').withText('lunch').exists).ok()
 
@@ -33,7 +33,7 @@ test(`should allow a user to edit tags`, async(t)  => {
 
   await t
     .navigateTo(`${TEST_URL}/myrecipes`)
-    .click(Selector('a').withText(title))
+    .click(Selector('div[class="minicard-title"]').withText(title))
     .expect(Selector('div').withText('hot').exists).ok()
     .expect(Selector('div').withText('lunch').exists).notOk()
     .expect(Selector('div').withText('dinner').exists).ok()

@@ -22,9 +22,10 @@ test(`should allow a user to sign in`, async (t)  => {
   // register user
   await register(t, username, email)
 
-  // log a user out
+  // log a user out (ignore case regex because css text-transform)
   await t
-    .click(Selector('a').withText('Log Out'))
+    .click(Selector('button[id="hamburger"]'))
+    .click(Selector('a').withText(/Log Out/i))
 
   // log a user in
   await t
@@ -47,7 +48,8 @@ test(`should allow a user to sign in`, async (t)  => {
 
   // log a user out
   await t
-    .click(Selector('a').withText('Log Out'))
+    .click(Selector('button[id="hamburger"]'))
+    .click(Selector('a').withText(/Log Out/i))
 
   // assert '/logout' is displayed properly
   await t
