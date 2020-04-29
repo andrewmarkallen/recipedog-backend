@@ -12,9 +12,7 @@ from project.tests.utils import (add_user,
 class TestRecipesBlueprint(BaseTestCase):
 
     def test_post_recipes(self):
-        add_user('test', 'test@test.com', 'test')
-        response = login_user('test@test.com', 'test')
-        token = json.loads(response.data.decode())['auth_token']
+        token = self.register_and_login()
         response = self.post_recipe(token, recipe_one_no_tags)
         data = json.loads(response.data.decode())
         self.assertEqual(response.status_code, 201)
@@ -22,9 +20,7 @@ class TestRecipesBlueprint(BaseTestCase):
 
     def test_get_single_recipe_no_tags_after_created(self):
         # register and log in
-        add_user('test', 'test@test.com', 'test')
-        response = login_user('test@test.com', 'test')
-        token = json.loads(response.data.decode())['auth_token']
+        token = self.register_and_login()
         # post a recipe and then retrieve all recipes
         response = self.post_recipe(token, recipe_one_no_tags)
         self.assertEqual(response.status_code, 201)
@@ -38,9 +34,7 @@ class TestRecipesBlueprint(BaseTestCase):
 
     def test_get_multiple_recipes_no_tags(self):
         # register and log in
-        add_user('test', 'test@test.com', 'test')
-        response = login_user('test@test.com', 'test')
-        token = json.loads(response.data.decode())['auth_token']
+        token = self.register_and_login()
         # post two different recipes and then retrieve all recipes
         self.post_recipe(token, recipe_one_no_tags)
         self.post_recipe(token, recipe_two_no_tags)
@@ -56,9 +50,7 @@ class TestRecipesBlueprint(BaseTestCase):
 
     def test_get_single_recipe(self):
         # register and log in
-        add_user('test', 'test@test.com', 'test')
-        response = login_user('test@test.com', 'test')
-        token = json.loads(response.data.decode())['auth_token']
+        token = self.register_and_login()
         # post a recipe and then retrieve it
         response = self.post_recipe(token, recipe_one_no_tags)
         response = self.get_recipe(token, 1)
@@ -68,13 +60,7 @@ class TestRecipesBlueprint(BaseTestCase):
             self.assertEqual(recipe[key], recipe_one_no_tags[key])
 
     def test_get_recipe_with_tags_after_created(self):
-        # register and log in
-        add_user('test', 'test@test.com', 'test')
-        response = login_user('test@test.com', 'test')
-        token = json.loads(response.data.decode())['auth_token']
-        # post a recipe and then retrieve all recipes
-        response = self.post_recipe(token, recipe_one_with_tags)
-        self.assertEqual(response.status_code, 201)
+        [recipe_id, token] = self.register_login_and_post_recipe()
         response = self.get_recipes(token)
         self.assertEqual(response.status_code, 200)
         # check if data returned matches what we saved
@@ -92,17 +78,8 @@ class TestRecipesBlueprint(BaseTestCase):
         self.assertIn('dinner', tags)
 
     def test_can_edit_recipe_title(self):
-        update = {
-            'title': 'pig stew'
-        }
-        # register and log in
-        add_user('test', 'test@test.com', 'test')
-        response = login_user('test@test.com', 'test')
-        token = json.loads(response.data.decode())['auth_token']
-        # post a new recipe
-        response = self.post_recipe(token, recipe_one_with_tags)
-        self.assertEqual(response.status_code, 201)
-        recipe_id = json.loads(response.data.decode())['id']
+        update = {'title': 'pig stew'}
+        [recipe_id, token] = self.register_login_and_post_recipe()
         # attempt to edit the recipe
         response = self.put_update(token, recipe_id, update)
         self.assertEqual(response.status_code, 204)
@@ -114,17 +91,8 @@ class TestRecipesBlueprint(BaseTestCase):
         self.assertEqual(recipe['title'], 'pig stew')
 
     def test_editing_non_existent_parameters(self):
-        update = {
-            'fake-param': 'does not exist'
-        }
-        # register and log in
-        add_user('test', 'test@test.com', 'test')
-        response = login_user('test@test.com', 'test')
-        token = json.loads(response.data.decode())['auth_token']
-        # post a new recipe
-        response = self.post_recipe(token, recipe_one_with_tags)
-        self.assertEqual(response.status_code, 201)
-        recipe_id = json.loads(response.data.decode())['id']
+        update = {'fake-param': 'does not exist'}
+        [recipe_id, token] = self.register_login_and_post_recipe()
         # attempt to edit the recipe
         response = self.put_update(token, recipe_id, update)
         # should receive meaningful response
@@ -139,14 +107,7 @@ class TestRecipesBlueprint(BaseTestCase):
             'ingredients': 'new ingredients',
             'method': 'new method'
         }
-        # register and log in
-        add_user('test', 'test@test.com', 'test')
-        response = login_user('test@test.com', 'test')
-        token = json.loads(response.data.decode())['auth_token']
-        # post a new recipe
-        response = self.post_recipe(token, recipe_one_with_tags)
-        self.assertEqual(response.status_code, 201)
-        recipe_id = json.loads(response.data.decode())['id']
+        [recipe_id, token] = self.register_login_and_post_recipe()
         # attempt to edit the recipe
         response = self.put_update(token, recipe_id, update)
         self.assertEqual(response.status_code, 204)
@@ -168,14 +129,7 @@ class TestRecipesBlueprint(BaseTestCase):
             'method': 'new method',
             'FAILY': 'i should stop rest from passing'
         }
-        # register and log in
-        add_user('test', 'test@test.com', 'test')
-        response = login_user('test@test.com', 'test')
-        token = json.loads(response.data.decode())['auth_token']
-        # post a new recipe
-        response = self.post_recipe(token, recipe_one_with_tags)
-        self.assertEqual(response.status_code, 201)
-        recipe_id = json.loads(response.data.decode())['id']
+        [recipe_id, token] = self.register_login_and_post_recipe()
         # attempt to edit the recipe
         response = self.put_update(token, recipe_id, update)
         self.assertEqual(response.status_code, 404)
@@ -191,14 +145,7 @@ class TestRecipesBlueprint(BaseTestCase):
             self.assertEqual(recipe[key], recipe_one_no_tags[key])
 
     def test_tags_api_add_tag(self):
-        # register and log in
-        add_user('test', 'test@test.com', 'test')
-        response = login_user('test@test.com', 'test')
-        token = json.loads(response.data.decode())['auth_token']
-        # post a new recipe
-        response = self.post_recipe(token, recipe_one_with_tags)
-        self.assertEqual(response.status_code, 201)
-        recipe_id = json.loads(response.data.decode())['id']
+        [recipe_id, token] = self.register_login_and_post_recipe()
         # attempt to add a new tag
         response = self.post_tag(token, recipe_id, 'new_tag')
         self.assertEqual(response.status_code, 201)
@@ -208,14 +155,7 @@ class TestRecipesBlueprint(BaseTestCase):
         self.assertIn('new_tag', tags)
 
     def test_tags_api_delete_tag(self):
-        # register and log in
-        add_user('test', 'test@test.com', 'test')
-        response = login_user('test@test.com', 'test')
-        token = json.loads(response.data.decode())['auth_token']
-        # post a new recipe
-        response = self.post_recipe(token, recipe_one_with_tags)
-        self.assertEqual(response.status_code, 201)
-        recipe_id = json.loads(response.data.decode())['id']
+        [recipe_id, token] = self.register_login_and_post_recipe()
         # try and delete a tag
         response = self.delete_tag(token, recipe_id, 'dinner')
         self.assertEqual(response.status_code, 200)
@@ -227,14 +167,7 @@ class TestRecipesBlueprint(BaseTestCase):
         self.assertEqual(1, len(tags))
 
     def test_tags_api_delete_nonexistent_tag(self):
-        # register and log in
-        add_user('test', 'test@test.com', 'test')
-        response = login_user('test@test.com', 'test')
-        token = json.loads(response.data.decode())['auth_token']
-        # post a new recipe
-        response = self.post_recipe(token, recipe_one_with_tags)
-        self.assertEqual(response.status_code, 201)
-        recipe_id = json.loads(response.data.decode())['id']
+        [recipe_id, token] = self.register_login_and_post_recipe()
         # try and delete a tag
         response = self.delete_tag(token, recipe_id, 'dinnnnnnner')
         self.assertEqual(response.status_code, 404)
@@ -249,9 +182,7 @@ class TestRecipesBlueprint(BaseTestCase):
 
     def test_tags_api_add_already_existing_tag(self):
         # register and log in
-        add_user('test', 'test@test.com', 'test')
-        response = login_user('test@test.com', 'test')
-        token = json.loads(response.data.decode())['auth_token']
+        token = self.register_and_login()
         # post a new recipe
         response = self.post_recipe(token, recipe_one_with_tags)
         self.assertEqual(response.status_code, 201)
@@ -272,6 +203,10 @@ class TestRecipesBlueprint(BaseTestCase):
         tags = json.loads(response.data.decode())['data']
         self.assertIn('new_tag', tags)
         self.assertEqual(3, len(tags))
+
+    # def test_can_delete_recipe(self):
+    #     # post a new recipe
+    #     id = self.register_login_and_post_recipe()
 
     def put_update(self, token, recipe_id, update):
         with self.client:
@@ -336,3 +271,15 @@ class TestRecipesBlueprint(BaseTestCase):
                 content_type='application/json'
             )
             return response
+
+    def register_and_login(self):
+        add_user('test', 'test@test.com', 'test')
+        response = login_user('test@test.com', 'test')
+        token = json.loads(response.data.decode())['auth_token']
+        return token
+
+    def register_login_and_post_recipe(self):
+        token = self.register_and_login()
+        response = self.post_recipe(token, recipe_one_with_tags)
+        recipe_id = json.loads(response.data.decode())['id']
+        return recipe_id, token

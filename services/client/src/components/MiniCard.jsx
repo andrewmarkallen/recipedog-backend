@@ -33,6 +33,7 @@ const DeleteButton = (props)  => {
     axios(delete_recipe(props.id))
     .then(() => setRedirect(true))
     .catch((err) =>console.log(err))
+    setDeleteModal(false)
     setRedirect(true)
   }
 
