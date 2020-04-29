@@ -275,7 +275,7 @@ const RecipeCard = (props)  => {
             editMode={editMode} id="method"
             html={props.method} onChange={handleEdit}/>
         </div>
-        {props.notes &&
+        { (editMode || props.notes) &&
         <div id="notes-heading">Notes:{' '}
           <EditableField
             editMode={editMode} id="notes"

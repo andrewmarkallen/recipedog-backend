@@ -1,5 +1,12 @@
 .content-editable {
   background-color: white;
+  border-radius: 6px;
+  border-width: 3px;
+  border-style: dashed;
+  border-color: #eee;
+  padding: 5px;
+  padding-left: 10px;
+  padding-top: 8px;
 }
 
 .doneEditingButton {
@@ -287,7 +294,8 @@ img[src$="none2.png"][modid$="12"] { filter: hue-rotate(330deg); }
 }
 
 #serves {
-  text-align: right;
+  position: relative;
+  left: 0px;
 }
 
 #clock {
@@ -303,12 +311,14 @@ img[src$="none2.png"][modid$="12"] { filter: hue-rotate(330deg); }
   display: inline-flex;
   font-size: 36px;
   position: relative;
-  left: 50px;
+  right: 10px;
 }
 
 #serves-block {
+  display: inline-flex;
   position: relative;
   padding-top: 20px;
+  left: 20px;
 }
 
 #title-jumbotron {
