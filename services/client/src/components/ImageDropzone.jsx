@@ -66,7 +66,7 @@ const ImageDropzone = (props)  => {
       <div className="container">
         <div {...getRootProps({style})}>
           <input {...getInputProps()} />
-          <p>Drag and drop some files</p>
+          <p>Drag and drop or click to add an image</p>
         </div>
         <aside style={thumbsContainer}>
           {thumbs}

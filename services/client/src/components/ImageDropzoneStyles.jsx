@@ -37,9 +37,9 @@ export const baseStyle = {
   padding: '20px',
   borderWidth: 2,
   borderRadius: 2,
-  borderColor: '#eeeeee',
+  borderColor: '#cecece',
   borderStyle: 'dashed',
-  backgroundColor: '#fafafa',
+  backgroundColor: '#eaeaea',
   color: '#bdbdbd',
   outline: 'none',
   transition: 'border .24s ease-in-out'

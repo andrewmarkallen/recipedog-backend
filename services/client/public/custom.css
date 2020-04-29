@@ -11,6 +11,8 @@
 
 .recipecard {
   background-color: #efefef;
+  border-radius: 10px;
+  margin-top: -30px;
 }
 
 
@@ -200,20 +202,52 @@ img[src$="none2.png"][modid$="12"] { filter: hue-rotate(330deg); }
   background: none;
   border: none;
   font-size: 23px;
+
+  position: relative;
+  display: inline-flex;
+  left: -10px;
+  top: 0px;
+  z-index: 3000;
+}
+
+.starfill {
   color: #FFFF33;
   -webkit-text-stroke: 1.5px #333;
 }
 
-#edit-button {
-  background: none;
-  border: none;
-  font-size: 30px;
+.nofill:hover {
+  color: #FFFF33;
+  -webkit-text-stroke: 1.5px #333;
 }
 
-#edit-button:hover {
+
+
+.editingButton {
+  border: none;
+  display: inline-flex;
+  background: none;
+  position: fixed;
+  right:20px;
+  bottom:20px;
+  font-size: 48px;
+}
+
+#edit-image {
+  display: inline-flex;
   background: none;
   border: none;
-  font-size: 30px;
+  position: relative;
+  top: -55px;
+  color: #aaa;
+  -webkit-text-stroke: 1.5px #333;
+  font-size: 36px;
+
+}
+
+.editingButton:hover, #edit-image:hover {
+  background: none;
+  border: none;
+  /* font-size: 30px; */
   color: cornflowerblue;
 }
 
@@ -231,4 +265,92 @@ img[src$="none2.png"][modid$="12"] { filter: hue-rotate(330deg); }
   position: absolute;
   right: 15px;
   top: 5px;
+}
+
+#droppy-recipecard > .container {
+  /* background-color: green; */
+  padding-top: 100px;
+  padding-bottom: 100px;
+  width: 100%;
+  height: 200px;
+}
+
+#preptime-field, #cooktime-field, #serves {
+  font-family: 'Josefin Sans', sans-serif;
+  text-transform: uppercase;
+  font-size: 18px;
+  text-align: left;
+}
+#rowboy {
+  position: relative;
+  top: -30px;
+}
+
+#serves {
+  text-align: right;
+}
+
+#clock {
+  display: inline-flex;
+  font-size: 36px;
+  position: relative;
+  left: -50px;
+  top: 55px;
+  padding-top: -100px;
+}
+
+#cutlery {
+  display: inline-flex;
+  font-size: 36px;
+  position: relative;
+  left: 50px;
+}
+
+#serves-block {
+  position: relative;
+  padding-top: 20px;
+}
+
+#title-jumbotron {
+  width: 100%;
+  padding-bottom: 0px;
+}
+
+.tags > div {
+  font-family: 'Roboto Slab', serif !important;
+  font-size: 14px !important;
+  border: none !important;
+  background-color: #efefef !important;
+}
+
+.tags > div > div > input { text-overflow: ellipsis !important; }
+
+.jumbotron {
+  padding-left: 20px !important;
+  padding-right: 20px !important;
+  padding-top: 20px !important;
+}
+
+#description, #description-editable {
+  font-family: 'Roboto Slab';
+  font-size: 18px;
+}
+
+#method, #method-editable, #ingredients, #ingredients-editable {
+  font-family: 'Roboto Slab';
+  font-size: 16px;
+  white-space: pre-line;
+}
+
+#notes-heading {
+  padding-top: 20px;
+  font-family: 'Roboto Slab', sans-serif;
+   font-style: italic;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+#date {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 24px;
 }
