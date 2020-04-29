@@ -1,5 +1,5 @@
 import React from 'react'
-import { Col, Button, ToggleButtonGroup,  Modal, ControlLabel, DropdownButton, Form, FormControl, FormGroup, MenuItem, ToggleButton } from 'react-bootstrap'
+import { Col, Button, ToggleButtonGroup,  Modal, ControlLabel, Form, FormControl, FormGroup, ToggleButton } from 'react-bootstrap'
 import ImageDropzone from './ImageDropzone'
 import axios from 'axios'
 import { post_recipe } from './Util.jsx'

@@ -354,3 +354,7 @@ img[src$="none2.png"][modid$="12"] { filter: hue-rotate(330deg); }
   font-family: 'Josefin Sans', sans-serif;
   font-size: 24px;
 }
+
+.minicard:hover {
+  filter: brightness(90%);
+}

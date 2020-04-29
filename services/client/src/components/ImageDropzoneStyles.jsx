@@ -7,14 +7,17 @@ export const thumbsContainer = {
 
 export const thumb = {
   display: 'inline-flex',
-  borderRadius: 2,
-  border: '1px solid #eaeaea',
+  borderRadius: 10,
   marginBottom: 8,
   marginRight: 8,
-  width: 100,
-  height: 100,
+  width: 'auto',
+  height: 90,
   padding: 4,
-  boxSizing: 'border-box'
+  border: 'none',
+  position: 'relative',
+  left: '40%',
+  bottom: 100,
+  filter: 'opacity(75%)'
 }
 
 export const thumbInner = {

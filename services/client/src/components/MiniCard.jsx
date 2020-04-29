@@ -1,4 +1,4 @@
-import React, {useState } from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Col } from 'react-bootstrap'
 import { get_image_url_with_fallback, get_recipe_url } from './Util'
