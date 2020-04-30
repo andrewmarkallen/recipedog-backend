@@ -29,18 +29,15 @@ const NavBar = (props)  => {
   const[showSearch, setShowSearch] = useState(false)
 
   const handleClick = ()  => {
-    console.log("clickety")
-    var x = document.getElementById("myTopnav");
-      if (x.className === "fixed-nav-bar") {
-        x.className += " responsive";
-        console.log("adding")
-      } else {
-        x.className = "fixed-nav-bar";
-      }
+    var x = document.getElementById("myTopnav")
+    if (x.className === "fixed-nav-bar") {
+      x.className += " responsive"
+    } else {
+      x.className = "fixed-nav-bar"
+    }
   }
 
   const handleCloseSearch = () => { setShowSearch(false)}
-
 
   return(
     <div>
