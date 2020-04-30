@@ -64,7 +64,6 @@ const NavBar = (props)  => {
         </button>
       </nav>
     </div>
-
   )
 }
 

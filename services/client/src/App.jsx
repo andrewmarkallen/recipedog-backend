@@ -10,6 +10,7 @@ import Logout from './components/Logout'
 import UserStatus from './components/UserStatus'
 import Recipes from './components/Recipes'
 import RecipeCard from './components/RecipeCard'
+import FrontPage from './components/FrontPage'
 
 class App extends Component {
   constructor() {
@@ -62,9 +63,10 @@ class App extends Component {
           <div class4="col-md-6">
           <Switch>
             <Route exact path='/' render={()  => (
-              <UsersList
-                users={this.state.users}
-              />
+              <div>
+                <FrontPage/>
+                {/* <UsersList users={this.state.users}/> */}
+              </div>
             )} />
             <Route exact path='/about' component={About}/>
             <Route exact path='/myrecipes' render={()  =>  (

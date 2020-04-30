@@ -46,7 +46,7 @@ const DeleteButton = (props)  => {
         onClick={() => setDeleteModal(true)}>
         </span>
       }
-      <Modal id="delete-modal" show={deleteModal} onHide={() => setDeleteModal(false)}>>
+      <Modal id="delete-modal" show={deleteModal} onHide={() => setDeleteModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>
             <h1>Delete this recipe?</h1>

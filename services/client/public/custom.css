@@ -412,3 +412,7 @@ img[src$="none2.png"][modid$="12"] { filter: hue-rotate(330deg); }
   margin-bottom: 60px;
   background-color: lavender;
 }
+
+#carousel {
+  padding-top: 100px;
+}
