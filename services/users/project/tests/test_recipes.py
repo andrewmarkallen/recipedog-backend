@@ -24,10 +24,9 @@ class TestRecipesBlueprint(BaseTestCase):
         # post a recipe and then retrieve all recipes
         response = self.post_recipe(token, recipe_one_no_tags)
         self.assertEqual(response.status_code, 201)
-        response = self.get_recipes(token)
-        self.assertEqual(response.status_code, 200)
-        # check if data returned matches what we saved
-        data = json.loads(response.data.decode())
+        [code, data] = self.decode_response(self.get_recipes(token))
+        self.assertEqual(code, 200)
+        # # check if data returned matches what we saved
         recipe = data['data'][0]
         for key in recipe_one_no_tags.keys():
             self.assertEqual(recipe[key], recipe_one_no_tags[key])
@@ -204,9 +203,47 @@ class TestRecipesBlueprint(BaseTestCase):
         self.assertIn('new_tag', tags)
         self.assertEqual(3, len(tags))
 
-    # def test_can_delete_recipe(self):
-    #     # post a new recipe
-    #     id = self.register_login_and_post_recipe()
+    def test_can_delete_recipe(self):
+        # post a new recipe
+        [id, token] = self.register_login_and_post_recipe()
+        # check recipe exists
+        response = self.get_recipe(token, id)
+        self.assertEqual(response.status_code, 200)
+        # attempt to delete recipe
+        [code, data] = self.decode_response(self.delete_recipe(token, id))
+        self.assertEqual(code, 200)
+        self.assertEqual(data['message'], 'recipe deleted')
+        # check recipe is gone
+        [code, data] = self.decode_response(self.get_recipe(token, id))
+        self.assertEqual(code, 404)
+        self.assertEqual(data['message'], 'recipe does not exist')
+
+    def test_attempt_delete_non_existing_recipe(self):
+        token = self.register_and_login()
+        # make sure a given recipe does not exist
+        [code, data] = self.decode_response(self.get_recipe(token, 9999))
+        self.assertEqual(code, 404)
+        self.assertEqual(data['message'], 'recipe does not exist')
+        # attempt to delete this recipe
+        [code, data] = self.decode_response(self.delete_recipe(token, 9999))
+        self.assertEqual(code, 404)
+        self.assertEqual(data['message'], 'recipe does not exist')
+
+    def test_delete_recipe_not_owned_by_user(self):
+        [id, token1] = self.register_login_and_post_recipe()
+        token2 = self.register_and_login('username2', 'test2@test.com')
+        # attemt to delete recipe with wrong credentials
+        [code, data] = self.decode_response(self.delete_recipe(token2, id))
+        self.assertEqual(code, 403)
+        self.assertEqual(data['message'], 'action forbidden')
+
+    def delete_recipe(self, token, recipe_id):
+        with self.client:
+            response = self.client.delete(
+                f'/recipes/{recipe_id}',
+                headers={'Authorization': f'Bearer {token}'}
+            )
+            return response
 
     def put_update(self, token, recipe_id, update):
         with self.client:
@@ -272,9 +309,11 @@ class TestRecipesBlueprint(BaseTestCase):
             )
             return response
 
-    def register_and_login(self):
-        add_user('test', 'test@test.com', 'test')
-        response = login_user('test@test.com', 'test')
+    def register_and_login(self, username='test', email='test@test.com'):
+        # use username as password
+        password = username
+        add_user(username, email, password)
+        response = login_user(email, password)
         token = json.loads(response.data.decode())['auth_token']
         return token
 
@@ -283,3 +322,12 @@ class TestRecipesBlueprint(BaseTestCase):
         response = self.post_recipe(token, recipe_one_with_tags)
         recipe_id = json.loads(response.data.decode())['id']
         return recipe_id, token
+
+    def decode_response(self, response):
+        code = response.status_code
+        data = {}
+        try:
+            data = json.loads(response.data.decode())
+        except Exception as e:
+            data = {'message': str(e)}
+        return code, data

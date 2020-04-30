@@ -11,7 +11,8 @@ const RecipesList = (props)  => {
       <Grid><Row className="show-grid">
           <AddRecipeCard getRecipes={props.getRecipes}/>
           { props.recipes.reverse().map((recipe, index)  => {
-               return <MiniCard key={index} recipe={recipe}/> }) }
+            return <MiniCard key={index} recipe={recipe}
+            updateRecipes={props.updateRecipes} /> }) }
       </Row></Grid>
       {/* <DebugRecipeCards recipes={props.recipes}/> */}
     </div>

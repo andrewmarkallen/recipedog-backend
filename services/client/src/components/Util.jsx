@@ -34,7 +34,7 @@ export const post_recipe = (form_data)  => {
 }
 
 export const delete_recipe = (recipe_id)  => {
-  return axios_options(get_recipe_url(recipe_id), 'delete', auth_json)
+  return axios_options(get_recipes_url(recipe_id), 'delete', auth_json)
 }
 
 export const get_recipes = ()  => {

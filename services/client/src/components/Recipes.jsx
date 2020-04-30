@@ -36,6 +36,7 @@ class Recipes extends Component {
           recipes={this.state.recipes}
           getRecipes={this.getRecipes}
           isAuthenticated={this.props.isAuthenticated}
+          updateRecipes={this.getRecipes}
         />
       </div>
     )

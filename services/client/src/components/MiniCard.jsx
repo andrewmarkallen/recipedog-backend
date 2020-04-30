@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Link, Redirect } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { Button, ButtonToolbar, Col, Modal } from 'react-bootstrap'
 import { get_image_url_with_fallback, get_recipe_url, delete_recipe } from './Util'
 import AddRecipeModal from './AddRecipeModal'
@@ -31,18 +31,15 @@ const DeleteButton = (props)  => {
 
   const deleteRecipe = ()  => {
     axios(delete_recipe(props.id))
-    .then(() => setRedirect(true))
+    .then(() => props.updateRecipes())
     .catch((err) =>console.log(err))
     setDeleteModal(false)
-    setRedirect(true)
   }
 
-  const [redirect, setRedirect] = useState(false)
   const [deleteModal, setDeleteModal] = useState(false)
 
   return(
     <div>
-      { redirect && <Redirect to='/myrecipes'/>}
       { !deleteModal &&
         <span id="minicard-delete"
         className="glyphicon glyphicon-remove"
@@ -81,7 +78,10 @@ const MiniCard = (props)  => {
       onMouseLeave={() => setShowDelete(false)}
     >
       { showDelete &&
-        <DeleteButton title={props.recipe.title} id={props.recipe.id} /> }
+        <DeleteButton title={props.recipe.title}
+                      id={props.recipe.id}
+                      updateRecipes={props.updateRecipes}/>
+      }
       <Link to={
         {
           pathname: get_recipe_url(props.recipe.id),

@@ -84,7 +84,8 @@ class Recipe(db.Model):
     serves = db.Column(db.Integer, nullable=True)
     notes = db.Column(db.String(65536), nullable=True)
     favourite = db.Column(db.Boolean, default=True, nullable=True)
-    tags = db.relationship("TagMap", back_populates='recipe')
+    tags = db.relationship(
+        "TagMap", back_populates='recipe', cascade='all, delete-orphan')
 
     def __repr__(self):
         return '<Recipe %r>' % self.title

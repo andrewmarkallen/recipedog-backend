@@ -50,3 +50,7 @@ def response_success(message, code, dict=None):
     if dict is not None:
         response_object.update(dict)
     return jsonify(response_object), code
+
+
+def delete_image(filename):
+    pass

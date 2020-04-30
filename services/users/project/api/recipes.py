@@ -1,4 +1,5 @@
-from project.api.utils import authenticate, response_success, response_failure
+from project.api.utils import (authenticate, response_success,
+                               response_failure, delete_image)
 from flask import Blueprint, request
 from sqlalchemy import exc
 from project.api.models import Recipe
@@ -67,7 +68,29 @@ def post_tag(resp, recipe_id):
         return response_failure(str(e), 404)
 
 
-@recipes_blueprint.route('/recipes/<recipe_id>', methods=['GET', 'PUT'])
+@recipes_blueprint.route('/recipes/<recipe_id>', methods=['DELETE'])
+@authenticate
+def delete_recipe(resp, recipe_id):
+    try:
+        recipe = Recipe.query.filter_by(id=recipe_id).scalar()
+        if recipe is None:
+            return response_failure('recipe does not exist', 404)
+        if recipe.owner != resp:
+            return response_failure('action forbidden', 403)
+        if recipe.image is not None:
+            delete_image(recipe.image)
+        db.session.delete(recipe)
+        db.session.commit()
+        return response_success('recipe deleted', 200)
+    except exc.IntegrityError as e:
+        db.session.rollback()
+        return response_failure(str(e), 400)
+    except Exception as e:
+        return response_failure(str(e), 404)
+
+
+@recipes_blueprint.route('/recipes/<recipe_id>',
+                         methods=['GET', 'PUT', 'DELETE'])
 @authenticate
 def get_recipe(resp, recipe_id):
     if request.method == 'PUT':

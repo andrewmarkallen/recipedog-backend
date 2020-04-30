@@ -26,8 +26,8 @@ def login_user(email, password):
         response = client.post(
             '/auth/login',
             data=json.dumps({
-                'email': 'test@test.com',
-                'password': 'test',
+                'email': email,
+                'password': password,
             }),
             content_type='application/json'
         )
