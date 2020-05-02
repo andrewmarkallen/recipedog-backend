@@ -2,8 +2,9 @@ from project.api.utils import (authenticate, response_success,
                                response_failure, delete_image)
 from flask import Blueprint, request
 from sqlalchemy import exc
-from project.api.models import Recipe
+from project.api.models import Recipe, Tag
 from project import db
+import re
 
 
 recipes_blueprint = Blueprint('recipes', __name__,
@@ -128,4 +129,58 @@ def get_tags(resp, recipe_id):
         data = [tag.name for tag in recipe.getTags()]
         return response_success('success', 200, {'data': data})
     except Exception as e:
+        return response_failure(str(e), 404)
+
+
+@recipes_blueprint.route('/search', methods=['GET'])
+@authenticate
+def search_recipes(resp):
+
+    def join_any(results):
+        constituents = [x for y in results for x in y]
+        return list(dict.fromkeys(constituents))
+
+    def join_all(results):
+        constituents = [x for y in results for x in y]
+        finalresults = filter(lambda x: x_present_in_all_y(x, results),
+                              constituents)
+        return list(dict.fromkeys(finalresults))
+
+    def x_present_in_all_y(constituent, results):
+        truthArray = [constituent in y for y in results]
+        presentInAll = False not in truthArray
+        return presentInAll
+
+    try:
+        results = []
+        fields = request.args.get('fields').split(',')
+        search = request.args.get('search')
+        mode = request.args.get('mode')
+        search_terms = re.split(' |,|-', search)
+        for term in search_terms:
+            termResults = []
+            expr = f'%{term}%'
+            for field in fields:
+                if field == 'title':
+                    recipes = Recipe.query.filter(
+                        Recipe.title.ilike(expr)).all()
+                    termResults += [recipe.id for recipe in recipes]
+                if field == 'description':
+                    recipes = Recipe.query.filter(
+                        Recipe.description.ilike(expr)).all()
+                    termResults += [recipe.id for recipe in recipes]
+                if field == 'tags':
+                    tag = Tag.query.filter_by(name=term).scalar()
+                    if tag is not None:
+                        recipes = tag.getAllRecipesByUserID(resp)
+                        termResults += [recipe.id for recipe in recipes]
+            termResults = list(dict.fromkeys(termResults))
+            results.append(termResults)
+        if mode == 'any':
+            results = join_any(results)
+        else:
+            results = join_all(results)
+        return response_success('search results', 200, {'data': results})
+    except Exception as e:
+        print(str(e))
         return response_failure(str(e), 404)

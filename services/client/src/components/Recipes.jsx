@@ -1,21 +1,71 @@
 import React, { Component } from 'react'
 import axios from 'axios'
+import MiniCard, {AddRecipeCard} from './MiniCard'
 import { Link } from 'react-router-dom'
-import RecipesList from './RecipesList'
-import { get_recipes } from './Util.jsx'
+import { get_recipe, search_recipes, get_recipes } from './Util.jsx'
+import { Grid, Row } from 'react-bootstrap'
+import queryString from 'query-string'
 
 class Recipes extends Component {
+
   constructor (props) {
     super(props)
     this.state = {
       recipes: ['blank'],
+      search: ''
     }
     this.getRecipes = this.getRecipes.bind(this)
+    this.loadRecipes = this.loadRecipes.bind(this)
+    this.searchRecipes = this.searchRecipes.bind(this)
   }
 
   componentDidMount() {
-    if (this.props.isAuthenticated)
-      {this.getRecipes()}
+    if(this.props.location && this.props.location.search){
+      this.setState({search : this.props.location.search}, this.loadRecipes)
+    }
+    else {
+      this.loadRecipes()
+    }
+  }
+
+  componentDidUpdate() {
+    if(this.props.location && this.props.location.search) {
+      if(this.state.search !== this.props.location.search) {
+        this.setState({search : this.props.location.search}, this.loadRecipes)
+      }
+    }
+  }
+
+  loadRecipes() {
+    if (this.props.isAuthenticated) {
+      if(this.state.search) {
+        this.searchRecipes(this.state.search)
+      }
+      else {
+        this.getRecipes()}
+    }
+  }
+
+  searchRecipes() {
+    console.log(queryString.parse(this.state.search))
+    return axios(search_recipes((this.state.search)))
+    .then((res) => {
+      const ids = res.data.data
+      this.setState({ recipes: []})
+      ids.map(id  => axios(get_recipe(id))
+        .then(res => {
+          const recipe = res.data.data
+          this.setState({ recipes: [...this.state.recipes, recipe] })
+          console.log('then')
+          console.log(recipe)
+          console.log(this.state.recipes)
+      }
+      )
+        .catch(e => console.log(e))
+      )
+
+    })
+    .catch((error)  => {console.log(error)})
   }
 
   getRecipes() {
@@ -31,13 +81,19 @@ class Recipes extends Component {
       )
     }
     return (
-      <div id="my-recipes">
-        <RecipesList
-          recipes={this.state.recipes}
-          getRecipes={this.getRecipes}
-          isAuthenticated={this.props.isAuthenticated}
-          updateRecipes={this.getRecipes}
-        />
+      <div>
+        { this.state.search && <h1>Search Results</h1> }
+        { !this.state.search && <h1>My Recipes</h1>}
+        <div id="my-recipes">
+
+          <Grid><Row className="show-grid">
+              <AddRecipeCard getRecipes={this.getRecipes}/>
+              { this.state.recipes.reverse().map((recipe, index)  => {
+                return <MiniCard key={index} recipe={recipe}
+                updateRecipes={this.getRecipes} /> }) }
+          </Row></Grid>
+          {/* <DebugRecipeCards recipes={props.recipes}/> */}
+        </div>
       </div>
     )
   }

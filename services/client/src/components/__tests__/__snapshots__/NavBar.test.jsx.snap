@@ -2,6 +2,9 @@
 
 exports[`NavBar renders a snapshot properly 1`] = `
 <div>
+  <div
+    className="name"
+  />
   <nav
     className="fixed-nav-bar"
     id="myTopnav"

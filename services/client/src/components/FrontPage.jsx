@@ -1,5 +1,5 @@
 import React from 'react'
-import { Carousel, Grid, Row } from 'react-bootstrap'
+import { Carousel } from 'react-bootstrap'
 import { get_image_url_with_fallback } from './Util'
 
 const FrontPage = (props)  => {

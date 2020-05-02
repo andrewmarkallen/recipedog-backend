@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Button, ButtonToolbar, Col, Modal } from 'react-bootstrap'
-import { get_image_url_with_fallback, get_recipe_url, delete_recipe } from './Util'
+import { get_image_url_with_fallback, delete_recipe } from './Util'
 import AddRecipeModal from './AddRecipeModal'
 import axios from 'axios'
 
@@ -49,7 +49,7 @@ const DeleteButton = (props)  => {
       <Modal id="delete-modal" show={deleteModal} onHide={() => setDeleteModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>
-            <h1>Delete this recipe?</h1>
+            <span id="modal-delete">Delete this recipe?</span>
           </Modal.Title>
           <Modal.Body>
             <h2 id="delete-modal-title">{props.title}</h2>
@@ -84,7 +84,7 @@ const MiniCard = (props)  => {
       }
       <Link to={
         {
-          pathname: get_recipe_url(props.recipe.id),
+          pathname: `recipe/${props.recipe.id}`,
           state: { recipe: props.recipe }
         }
       }>

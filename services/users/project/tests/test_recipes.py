@@ -1,18 +1,22 @@
 import json
 
 from project.tests.base import BaseTestCase
-from project.tests.utils import (add_user,
-                                 login_user,
+from project.tests.utils import (
+                                 register_and_login,
                                  recipe_one_no_tags,
                                  recipe_two_no_tags,
-                                 recipe_one_with_tags
+                                 recipe_one_with_tags,
+                                 recipe_two_with_tags,
+                                 recipe_three_with_tags,
+                                 recipe_four_with_tags
                                  )
+from urllib.parse import urlencode
 
 
 class TestRecipesBlueprint(BaseTestCase):
 
     def test_post_recipes(self):
-        token = self.register_and_login()
+        token = register_and_login()
         response = self.post_recipe(token, recipe_one_no_tags)
         data = json.loads(response.data.decode())
         self.assertEqual(response.status_code, 201)
@@ -20,7 +24,7 @@ class TestRecipesBlueprint(BaseTestCase):
 
     def test_get_single_recipe_no_tags_after_created(self):
         # register and log in
-        token = self.register_and_login()
+        token = register_and_login()
         # post a recipe and then retrieve all recipes
         response = self.post_recipe(token, recipe_one_no_tags)
         self.assertEqual(response.status_code, 201)
@@ -33,7 +37,7 @@ class TestRecipesBlueprint(BaseTestCase):
 
     def test_get_multiple_recipes_no_tags(self):
         # register and log in
-        token = self.register_and_login()
+        token = register_and_login()
         # post two different recipes and then retrieve all recipes
         self.post_recipe(token, recipe_one_no_tags)
         self.post_recipe(token, recipe_two_no_tags)
@@ -49,7 +53,7 @@ class TestRecipesBlueprint(BaseTestCase):
 
     def test_get_single_recipe(self):
         # register and log in
-        token = self.register_and_login()
+        token = register_and_login()
         # post a recipe and then retrieve it
         response = self.post_recipe(token, recipe_one_no_tags)
         response = self.get_recipe(token, 1)
@@ -181,7 +185,7 @@ class TestRecipesBlueprint(BaseTestCase):
 
     def test_tags_api_add_already_existing_tag(self):
         # register and log in
-        token = self.register_and_login()
+        token = register_and_login()
         # post a new recipe
         response = self.post_recipe(token, recipe_one_with_tags)
         self.assertEqual(response.status_code, 201)
@@ -219,7 +223,7 @@ class TestRecipesBlueprint(BaseTestCase):
         self.assertEqual(data['message'], 'recipe does not exist')
 
     def test_attempt_delete_non_existing_recipe(self):
-        token = self.register_and_login()
+        token = register_and_login()
         # make sure a given recipe does not exist
         [code, data] = self.decode_response(self.get_recipe(token, 9999))
         self.assertEqual(code, 404)
@@ -231,11 +235,141 @@ class TestRecipesBlueprint(BaseTestCase):
 
     def test_delete_recipe_not_owned_by_user(self):
         [id, token1] = self.register_login_and_post_recipe()
-        token2 = self.register_and_login('username2', 'test2@test.com')
+        token2 = register_and_login('username2', 'test2@test.com')
         # attemt to delete recipe with wrong credentials
         [code, data] = self.decode_response(self.delete_recipe(token2, id))
         self.assertEqual(code, 403)
         self.assertEqual(data['message'], 'action forbidden')
+
+    def test_can_search_by_title(self):
+        [id, token] = self.register_login_and_post_recipe()
+        query = {
+            'fields': ['title'],
+            'search': 'curried fig',
+            'mode': 'any'
+        }
+        response = self.search_recipes(token, query)
+        [code, data] = self.decode_response(response)
+        self.assertEqual(code, 200)
+        self.assertEqual(data['message'], 'search results')
+        self.assertEqual(data['data'], [id])
+
+    def test_search_nonexistent_title_returns_no_results(self):
+        [id, token] = self.register_login_and_post_recipe()
+        query = {
+            'fields': ['title'],
+            'search': 'noexist',
+            'mode': 'any'
+        }
+        response = self.search_recipes(token, query)
+        [code, data] = self.decode_response(response)
+        self.assertEqual(code, 200)
+        self.assertEqual(data['message'], 'search results')
+        self.assertEqual(data['data'], [])
+
+    def test_can_search_by_description(self):
+        [id, token] = self.register_login_and_post_recipe()
+        query = {
+            'fields': ['description'],
+            'search': 'salt',
+            'mode': 'any'
+        }
+        response = self.search_recipes(token, query)
+        [code, data] = self.decode_response(response)
+        self.assertEqual(code, 200)
+        self.assertEqual(data['message'], 'search results')
+        self.assertEqual(data['data'], [id])
+
+    def test_search_description_returns_multiple_results(self):
+        [id1, token] = self.register_login_and_post_recipe()
+        id2 = self.post_recipe_decode_response(token, recipe_two_no_tags)
+        id3 = self.post_recipe_decode_response(token, recipe_one_no_tags)
+        query = {
+            'fields': ['description'],
+            'search': 'salt',
+            'mode': 'any'
+        }
+        response = self.search_recipes(token, query)
+        [code, data] = self.decode_response(response)
+        self.assertEqual(code, 200)
+        self.assertEqual(data['message'], 'search results')
+        self.assertEqual(data['data'], [id1, id3])
+        self.assertNotIn(id2, data['data'])
+
+    def test_can_search_tags(self):
+        [id1, token] = self.register_login_and_post_recipe()
+        id2 = self.post_recipe_decode_response(token, recipe_two_with_tags)
+        id3 = self.post_recipe_decode_response(token, recipe_three_with_tags)
+        query = {
+            'fields': ['tags'],
+            'search': 'easy',
+            'mode': 'any'
+        }
+        response = self.search_recipes(token, query)
+        [code, data] = self.decode_response(response)
+        self.assertEqual(code, 200)
+        self.assertEqual(data['message'], 'search results')
+        self.assertEqual(data['data'], [id2, id3])
+        self.assertNotIn(id1, data['data'])
+
+    def test_can_search_multiple_fields_and_terms(self):
+        [id1, token] = self.register_login_and_post_recipe()
+        id2 = self.post_recipe_decode_response(token, recipe_two_no_tags)
+        id3 = self.post_recipe_decode_response(token, recipe_three_with_tags)
+        id4 = self.post_recipe_decode_response(token, recipe_four_with_tags)
+        query = {
+            'fields': ['description', 'tags'],
+            'search': 'classic easy boiled',
+            'mode': 'any'
+        }
+        response = self.search_recipes(token, query)
+        [code, data] = self.decode_response(response)
+        self.assertEqual(code, 200)
+        self.assertEqual(data['message'], 'search results')
+        self.assertEqual(data['data'], [id2, id3, id4])
+
+    def test_can_search_all_terms(self):
+        [id1, token] = self.register_login_and_post_recipe()
+        id2 = self.post_recipe_decode_response(token, recipe_two_no_tags)
+        id3 = self.post_recipe_decode_response(token, recipe_three_with_tags)
+        id4 = self.post_recipe_decode_response(token, recipe_four_with_tags)
+        query = {
+            'fields': ['title', 'tags', 'description'],
+            'search': 'easy royale style',
+            'mode': 'all'
+        }
+        response = self.search_recipes(token, query)
+        [code, data] = self.decode_response(response)
+        self.assertEqual(code, 200)
+        self.assertEqual(data['message'], 'search results')
+        self.assertEqual(data['data'], [id3])
+        self.assertNotIn(id2, data['data'])
+        self.assertNotIn(id4, data['data'])
+
+    def test_search_no_fields_fails(self):
+        pass
+
+    def test_search_no_search_fails(self):
+        pass
+
+    def test_search_only_returns_own_recipes(self):
+        pass
+
+    def test_multiple_search_terms_return_results(self):
+        pass
+
+    def query_string_from_dict(self, query):
+        query['fields'] = ','.join(query['fields'])
+        return urlencode(query)
+
+    def search_recipes(self, token, query):
+        with self.client:
+
+            response = self.client.get(
+                f'/search?{self.query_string_from_dict(query)}',
+                headers={'Authorization': f'Bearer {token}'},
+            )
+            return response
 
     def delete_recipe(self, token, recipe_id):
         with self.client:
@@ -289,6 +423,11 @@ class TestRecipesBlueprint(BaseTestCase):
             )
             return response
 
+    def post_recipe_decode_response(self, token, recipe):
+        response = self.post_recipe(token, recipe)
+        recipe_id = json.loads(response.data.decode())['id']
+        return recipe_id
+
     def post_tag(self, token, recipe_id, tag):
         with self.client:
             response = self.client.post(
@@ -309,20 +448,6 @@ class TestRecipesBlueprint(BaseTestCase):
             )
             return response
 
-    def register_and_login(self, username='test', email='test@test.com'):
-        # use username as password
-        password = username
-        add_user(username, email, password)
-        response = login_user(email, password)
-        token = json.loads(response.data.decode())['auth_token']
-        return token
-
-    def register_login_and_post_recipe(self):
-        token = self.register_and_login()
-        response = self.post_recipe(token, recipe_one_with_tags)
-        recipe_id = json.loads(response.data.decode())['id']
-        return recipe_id, token
-
     def decode_response(self, response):
         code = response.status_code
         data = {}
@@ -331,3 +456,9 @@ class TestRecipesBlueprint(BaseTestCase):
         except Exception as e:
             data = {'message': str(e)}
         return code, data
+
+    def register_login_and_post_recipe(self, recipe=recipe_one_with_tags):
+        token = register_and_login()
+        response = self.post_recipe(token, recipe)
+        recipe_id = json.loads(response.data.decode())['id']
+        return recipe_id, token

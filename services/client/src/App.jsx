@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Route, Switch } from 'react-router-dom'
 import axios from 'axios';
 
-import UsersList from './components/UsersList'
+// import UsersList from './components/UsersList'
 import About from './components/About'
 import NavBar from './components/NavBar'
 import Form from './components/Form'
@@ -69,8 +69,9 @@ class App extends Component {
               </div>
             )} />
             <Route exact path='/about' component={About}/>
-            <Route exact path='/myrecipes' render={()  =>  (
+            <Route exact path='/myrecipes' render={(props)  =>  (
               <Recipes
+                {...props}
                 isAuthenticated={this.state.isAuthenticated}
                 loginUser={this.loginUser}
               />

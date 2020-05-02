@@ -42,6 +42,15 @@ def add_recipe(owner, title, ingredients, method):
     return recipe
 
 
+def register_and_login(username='test', email='test@test.com'):
+    # use username as password
+    password = username
+    add_user(username, email, password)
+    response = login_user(email, password)
+    token = json.loads(response.data.decode())['auth_token']
+    return token
+
+
 recipe_one_no_tags = {
     'title': 'curried fig',
     'description': 'fig curried with salt',
@@ -93,5 +102,33 @@ recipe_two_with_tags = {
     'cooktime': 45,
     'serves': 4,
     'tags': 'beans, breakfast, easy',
+    'favourite': False
+}
+
+recipe_three_with_tags = {
+    'title': 'apple royale',
+    'description': 'apples royal style',
+    'ingredients': '4 apples\n1 kg sugar',
+    'method': 'boil apples in sugar for four weeks',
+    'image': 'mushroom-toast.jpg',
+    'url': 'www.google.com',
+    'preptime': 45,
+    'cooktime': 45,
+    'serves': 4,
+    'tags': 'apple, sweet, easy',
+    'favourite': False
+}
+
+recipe_four_with_tags = {
+    'title': 'clove rock',
+    'description': 'clove flavour hard boiled sweets',
+    'ingredients': 'sugar\nglucose syrup\nwater\ncolour',
+    'method': 'boil syrup till hard',
+    'image': 'mushroom-toast.jpg',
+    'url': 'www.google.com',
+    'preptime': 45,
+    'cooktime': 45,
+    'serves': 4,
+    'tags': 'clove, candy, boiled',
     'favourite': False
 }

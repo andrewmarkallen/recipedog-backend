@@ -6,7 +6,7 @@ const randomstring = require('randomstring')
 
 const title = randomstring.generate()
 
-fixture('tags').page(`${TEST_URL}/myrecipes`)
+fixture('delete').page(`${TEST_URL}/myrecipes`)
 
 test(`should allow a user to delete recipes`, async(t)  => {
   //log in user

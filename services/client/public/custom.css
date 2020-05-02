@@ -416,3 +416,12 @@ img[src$="none2.png"][modid$="12"] { filter: hue-rotate(330deg); }
 #carousel {
   padding-top: 100px;
 }
+
+#modal-delete {
+  font-family: 'Josefin Sans', sans-serif;
+}
+
+.search-button {
+  padding-top: 25px;
+  text-align: center;
+}

@@ -22,18 +22,6 @@ const TEST_URL = process.env.TEST_URL
 
 fixture('/myrecipes').page(`${TEST_URL}/myrecipes`)
 
-test(`existing recipes should be displayed in the my recipes`, async (t)  => {
-
-  //log in user
-  await login(t, 'yunwoo@example.com', 'sekrit')
-
-  //see if database test recipe is still there
-  await t.navigateTo(`${TEST_URL}/myrecipes`)
-
-  const selector = Selector('div[class="minicard-title"]').withText('Egg on Rice').parent()
-  await t.expect(selector.exists).ok()
-})
-
 test(`should allow a user to add a recipe`, async(t)  => {
   //log in user
   await login(t, 'marka@example.com', 'sekrit')

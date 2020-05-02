@@ -1,26 +1,106 @@
-import React, { useState } from 'react'
+import React, { Component, useState } from 'react'
 import { Redirect } from 'react-router-dom'
-import { Button, FormControl, Glyphicon, FormGroup, InputGroup, Modal } from 'react-bootstrap'
+import { Button, ButtonToolbar, FormControl,  Glyphicon, FormGroup, InputGroup, Modal, ToggleButton, ToggleButtonGroup } from 'react-bootstrap'
+import queryString from 'query-string'
 
-const SearchModal = (props)  => {
+class SearchModal extends Component {
 
-  return(
-      <Modal id="search-modal" show={props.show} onHide={props.handleCloseSearch}>
-      <Modal.Header closeButton id="search-header">
-        <h1>Search by title and tags</h1>
-      </Modal.Header>
-      <Modal.Body>
-        <FormGroup>
-          <InputGroup classname="search-group">
-            <FormControl bsSize="large" type="text" placeholder="enter search terms..."/>
-            <InputGroup.Button>
-              <Button bsSize="large"><Glyphicon glyph="search"/></Button>
-            </InputGroup.Button>
-          </InputGroup>
-        </FormGroup>
-      </Modal.Body>
-    </Modal>
-  )
+  constructor(props) {
+    super(props)
+    this.state = {
+      fields: ['title', 'tags', 'description'],
+      searchString: '',
+      query: '',
+      mode: 'any',
+      redirect: false
+    }
+  this.handleSearch = this.handleSearch.bind(this)
+  this.handleSearchString = this.handleSearchString.bind(this)
+  this.handleSearchFields  = this.handleSearchFields.bind(this)
+  this.handleModeButton = this.handleModeButton.bind(this)
+  }
+
+  handleSearch() {
+    this.setState( { query: queryString.stringify(
+      {
+        search: this.state.searchString,
+        fields: this.state.fields.join(','),
+        mode: this.state.mode
+      }
+    )})
+    this.setState({redirect : true})
+    this.props.handleCloseSearch()
+    this.setState({searchString : ''})
+  }
+
+  handleModeButton(e) {
+    this.setState({ mode: e })
+  }
+
+  handleSearchString(e) {
+    this.setState({ searchString: e.target.value })
+  }
+
+  handleSearchFields(e) {
+    this.setState({ fields: e })
+  }
+
+  render() {
+    return(
+    <div className="name">
+      { (this.state.redirect) && <Redirect to={
+        {
+          pathname: "/myrecipes",
+          search: this.state.query
+        }
+      }/>}
+      <Modal id="search-modal" show={this.props.show} onHide={this.props.handleCloseSearch}>
+        <Modal.Header closeButton id="search-header">
+          <h1>Search for recipes</h1>
+        </Modal.Header>
+        <Modal.Body>
+          <FormGroup>
+
+            <ButtonToolbar>
+              <ToggleButtonGroup type="radio" name="options"
+                defaultValue={'all'} onChange={this.handleModeButton}
+              >
+                <ToggleButton value={'all'}>All terms</ToggleButton>
+                <ToggleButton value={'any'}>Any terms</ToggleButton>
+              </ToggleButtonGroup>
+            </ButtonToolbar>
+
+            <InputGroup className="search-group">
+
+              <FormControl autoFocus bsSize="large" type="text" id="search"
+                placeholder="enter search terms..."
+                onChange={this.handleSearchString}
+                onKeyPress={(e) => {e.key === 'Enter' && this.handleSearch()}}
+              />
+              <InputGroup.Button>
+                  <Button id="search-button" type="submit" bsSize="large" onClick={this.handleSearch}>
+                    <Glyphicon glyph="search"/>
+                  </Button>
+              </InputGroup.Button>
+
+            </InputGroup>
+
+            <ToggleButtonGroup className="search-button" type="checkbox"
+              value={this.state.fields} onChange={this.handleSearchFields}>
+
+              <ToggleButton value={'title'}>title</ToggleButton>
+              <ToggleButton value={'tags'}>tags</ToggleButton>
+              <ToggleButton value={'description'}>description</ToggleButton>
+              <ToggleButton value={'ingredients'}>ingredients</ToggleButton>
+
+            </ToggleButtonGroup>
+
+          </FormGroup>
+        </Modal.Body>
+      </Modal>
+    </div>
+    )
+  }
 }
 
 const NavBar = (props)  => {
