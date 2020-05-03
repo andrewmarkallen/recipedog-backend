@@ -8,7 +8,8 @@ from project.tests.utils import (
                                  recipe_one_with_tags,
                                  recipe_two_with_tags,
                                  recipe_three_with_tags,
-                                 recipe_four_with_tags
+                                 recipe_four_with_tags,
+                                 decode_response
                                  )
 from urllib.parse import urlencode
 
@@ -28,7 +29,7 @@ class TestRecipesBlueprint(BaseTestCase):
         # post a recipe and then retrieve all recipes
         response = self.post_recipe(token, recipe_one_no_tags)
         self.assertEqual(response.status_code, 201)
-        [code, data] = self.decode_response(self.get_recipes(token))
+        [code, data] = decode_response(self.get_recipes(token))
         self.assertEqual(code, 200)
         # # check if data returned matches what we saved
         recipe = data['data'][0]
@@ -214,22 +215,22 @@ class TestRecipesBlueprint(BaseTestCase):
         response = self.get_recipe(token, id)
         self.assertEqual(response.status_code, 200)
         # attempt to delete recipe
-        [code, data] = self.decode_response(self.delete_recipe(token, id))
+        [code, data] = decode_response(self.delete_recipe(token, id))
         self.assertEqual(code, 200)
         self.assertEqual(data['message'], 'recipe deleted')
         # check recipe is gone
-        [code, data] = self.decode_response(self.get_recipe(token, id))
+        [code, data] = decode_response(self.get_recipe(token, id))
         self.assertEqual(code, 404)
         self.assertEqual(data['message'], 'recipe does not exist')
 
     def test_attempt_delete_non_existing_recipe(self):
         token = register_and_login()
         # make sure a given recipe does not exist
-        [code, data] = self.decode_response(self.get_recipe(token, 9999))
+        [code, data] = decode_response(self.get_recipe(token, 9999))
         self.assertEqual(code, 404)
         self.assertEqual(data['message'], 'recipe does not exist')
         # attempt to delete this recipe
-        [code, data] = self.decode_response(self.delete_recipe(token, 9999))
+        [code, data] = decode_response(self.delete_recipe(token, 9999))
         self.assertEqual(code, 404)
         self.assertEqual(data['message'], 'recipe does not exist')
 
@@ -237,7 +238,7 @@ class TestRecipesBlueprint(BaseTestCase):
         [id, token1] = self.register_login_and_post_recipe()
         token2 = register_and_login('username2', 'test2@test.com')
         # attemt to delete recipe with wrong credentials
-        [code, data] = self.decode_response(self.delete_recipe(token2, id))
+        [code, data] = decode_response(self.delete_recipe(token2, id))
         self.assertEqual(code, 403)
         self.assertEqual(data['message'], 'action forbidden')
 
@@ -249,7 +250,7 @@ class TestRecipesBlueprint(BaseTestCase):
             'mode': 'any'
         }
         response = self.search_recipes(token, query)
-        [code, data] = self.decode_response(response)
+        [code, data] = decode_response(response)
         self.assertEqual(code, 200)
         self.assertEqual(data['message'], 'search results')
         self.assertEqual(data['data'], [id])
@@ -262,7 +263,7 @@ class TestRecipesBlueprint(BaseTestCase):
             'mode': 'any'
         }
         response = self.search_recipes(token, query)
-        [code, data] = self.decode_response(response)
+        [code, data] = decode_response(response)
         self.assertEqual(code, 200)
         self.assertEqual(data['message'], 'search results')
         self.assertEqual(data['data'], [])
@@ -275,7 +276,7 @@ class TestRecipesBlueprint(BaseTestCase):
             'mode': 'any'
         }
         response = self.search_recipes(token, query)
-        [code, data] = self.decode_response(response)
+        [code, data] = decode_response(response)
         self.assertEqual(code, 200)
         self.assertEqual(data['message'], 'search results')
         self.assertEqual(data['data'], [id])
@@ -290,7 +291,7 @@ class TestRecipesBlueprint(BaseTestCase):
             'mode': 'any'
         }
         response = self.search_recipes(token, query)
-        [code, data] = self.decode_response(response)
+        [code, data] = decode_response(response)
         self.assertEqual(code, 200)
         self.assertEqual(data['message'], 'search results')
         self.assertEqual(data['data'], [id1, id3])
@@ -306,7 +307,7 @@ class TestRecipesBlueprint(BaseTestCase):
             'mode': 'any'
         }
         response = self.search_recipes(token, query)
-        [code, data] = self.decode_response(response)
+        [code, data] = decode_response(response)
         self.assertEqual(code, 200)
         self.assertEqual(data['message'], 'search results')
         self.assertEqual(data['data'], [id2, id3])
@@ -323,7 +324,7 @@ class TestRecipesBlueprint(BaseTestCase):
             'mode': 'any'
         }
         response = self.search_recipes(token, query)
-        [code, data] = self.decode_response(response)
+        [code, data] = decode_response(response)
         self.assertEqual(code, 200)
         self.assertEqual(data['message'], 'search results')
         self.assertEqual(data['data'], [id2, id3, id4])
@@ -339,7 +340,7 @@ class TestRecipesBlueprint(BaseTestCase):
             'mode': 'all'
         }
         response = self.search_recipes(token, query)
-        [code, data] = self.decode_response(response)
+        [code, data] = decode_response(response)
         self.assertEqual(code, 200)
         self.assertEqual(data['message'], 'search results')
         self.assertEqual(data['data'], [id3])
@@ -347,24 +348,101 @@ class TestRecipesBlueprint(BaseTestCase):
         self.assertNotIn(id4, data['data'])
 
     def test_search_no_fields_fails(self):
-        pass
+        [id1, token] = self.register_login_and_post_recipe()
+        query = {
+            'search': 'easy royale style',
+            'mode': 'all'
+        }
+        with self.client:
+            response = self.client.get(
+                    f'/search?{urlencode(query)}',
+                    headers={'Authorization': f'Bearer {token}'},
+            )
+            [code, data] = decode_response(response)
+            self.assertEqual(code, 400)
+            self.assertEqual(data['message'], 'malformed request')
 
     def test_search_no_search_fails(self):
-        pass
+        [id1, token] = self.register_login_and_post_recipe()
+        query = {
+            'fields': ['title', 'tags', 'description'],
+            'mode': 'all'
+        }
+        with self.client:
+            response = self.client.get(
+                    f'/search?{urlencode(query)}',
+                    headers={'Authorization': f'Bearer {token}'},
+            )
+            [code, data] = decode_response(response)
+            self.assertEqual(code, 400)
+            self.assertEqual(data['message'], 'malformed request')
 
     def test_search_only_returns_own_recipes(self):
-        pass
+        [id1, token1] = self.register_login_and_post_recipe(
+            'test1', 'test1@test.com', recipe_two_with_tags)
+        [id2, token2] = self.register_login_and_post_recipe(
+            'tesft2', 'tesft2@test.com', recipe_two_with_tags)
+        query = {
+            'fields': ['tags'],
+            'search': 'easy',
+            'mode': 'all'
+        }
+        response1 = self.search_recipes(token1, query)
+        [code1, data1] = decode_response(response1)
+        self.assertEqual(code1, 200)
+        self.assertEqual(data1['message'], 'search results')
+        self.assertEqual(data1['data'], [id1])
+        response2 = self.search_recipes(token2, query)
+        [code2, data2] = decode_response(response2)
+        self.assertEqual(code2, 200)
+        self.assertEqual(data2['message'], 'search results')
+        self.assertEqual(data2['data'], [id2])
+        query = {
+            'fields': ['title'],
+            'search': 'beans',
+            'mode': 'all'
+        }
+        response1 = self.search_recipes(token1, query)
+        [code1, data1] = decode_response(response1)
+        self.assertEqual(code1, 200)
+        self.assertEqual(data1['message'], 'search results')
+        self.assertEqual(data1['data'], [id1])
+        response2 = self.search_recipes(token2, query)
+        [code2, data2] = decode_response(response2)
+        self.assertEqual(code2, 200)
+        self.assertEqual(data2['message'], 'search results')
+        self.assertEqual(data2['data'], [id2])
+        query = {
+            'fields': ['description'],
+            'search': 'beans',
+            'mode': 'all'
+        }
+        response1 = self.search_recipes(token1, query)
+        [code1, data1] = decode_response(response1)
+        self.assertEqual(code1, 200)
+        self.assertEqual(data1['message'], 'search results')
+        self.assertEqual(data1['data'], [id1])
+        response2 = self.search_recipes(token2, query)
+        [code2, data2] = decode_response(response2)
+        self.assertEqual(code2, 200)
+        self.assertEqual(data2['message'], 'search results')
+        self.assertEqual(data2['data'], [id2])
 
-    def test_multiple_search_terms_return_results(self):
-        pass
+    def test_get_recipes_only_returns_own_recipe(self):
+        [id1, token1] = self.register_login_and_post_recipe(
+            'test1', 'test1@test.com', recipe_two_with_tags)
+        [id2, token2] = self.register_login_and_post_recipe(
+            'tesft2', 'tesft2@test.com', recipe_two_with_tags)
+        response = self.get_recipe(token1, id2)
+        self.assertEqual(response.status_code, 403)
 
     def query_string_from_dict(self, query):
-        query['fields'] = ','.join(query['fields'])
-        return urlencode(query)
+        combined_query = query.copy()
+        combined_query['fields'] = ','.join(query['fields'])
+        return urlencode(combined_query)
 
     def search_recipes(self, token, query):
         with self.client:
-
             response = self.client.get(
                 f'/search?{self.query_string_from_dict(query)}',
                 headers={'Authorization': f'Bearer {token}'},
@@ -448,17 +526,12 @@ class TestRecipesBlueprint(BaseTestCase):
             )
             return response
 
-    def decode_response(self, response):
-        code = response.status_code
-        data = {}
-        try:
-            data = json.loads(response.data.decode())
-        except Exception as e:
-            data = {'message': str(e)}
-        return code, data
-
-    def register_login_and_post_recipe(self, recipe=recipe_one_with_tags):
-        token = register_and_login()
+    def register_login_and_post_recipe(
+            self,
+            username='test',
+            email='test@test.com',
+            recipe=recipe_one_with_tags):
+        token = register_and_login(username, email)
         response = self.post_recipe(token, recipe)
         recipe_id = json.loads(response.data.decode())['id']
         return recipe_id, token

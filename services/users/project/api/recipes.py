@@ -114,6 +114,8 @@ def get_recipe(resp, recipe_id):
         recipe = Recipe.query.filter_by(id=recipe_id).scalar()
         if recipe is None:
             return response_failure('recipe does not exist', 404)
+        if recipe.owner != resp:
+            return response_failure('forbidden', 403)
         return response_success('recipe', 200, {'data': recipe.to_json()})
     except Exception as e:
         return response_failure(str(e), 404)
@@ -152,35 +154,48 @@ def search_recipes(resp):
         return presentInAll
 
     try:
-        results = []
-        fields = request.args.get('fields').split(',')
+        recipes = []
+        fields = request.args.get('fields')
         search = request.args.get('search')
         mode = request.args.get('mode')
+
+        if any(map(lambda x: x is None, [fields, search, mode])):
+            return response_failure('malformed request', 400)
+
+        field_terms = fields.split(',')
         search_terms = re.split(' |,|-', search)
+
         for term in search_terms:
             termResults = []
-            expr = f'%{term}%'
-            for field in fields:
-                if field == 'title':
-                    recipes = Recipe.query.filter(
-                        Recipe.title.ilike(expr)).all()
-                    termResults += [recipe.id for recipe in recipes]
-                if field == 'description':
-                    recipes = Recipe.query.filter(
-                        Recipe.description.ilike(expr)).all()
-                    termResults += [recipe.id for recipe in recipes]
-                if field == 'tags':
-                    tag = Tag.query.filter_by(name=term).scalar()
-                    if tag is not None:
-                        recipes = tag.getAllRecipesByUserID(resp)
-                        termResults += [recipe.id for recipe in recipes]
-            termResults = list(dict.fromkeys(termResults))
-            results.append(termResults)
+            for field in field_terms:
+                termResults += search_field_for_term(field, term)
+            recipes.append(list(dict.fromkeys(termResults)))
         if mode == 'any':
-            results = join_any(results)
+            recipes = join_any(recipes)
         else:
-            results = join_all(results)
-        return response_success('search results', 200, {'data': results})
+            recipes = join_all(recipes)
+        recipes = filter(lambda recipe: recipe.owner == resp, recipes)
+        recipe_ids = [recipe.id for recipe in recipes]
+        return response_success('search results', 200, {'data': recipe_ids})
     except Exception as e:
         print(str(e))
         return response_failure(str(e), 404)
+
+
+def search_field_for_term(field, term):
+    expr = f'%{term}%'
+    results = []
+    if field == 'title':
+        results += Recipe.query.filter(
+            Recipe.title.ilike(expr)).all()
+    if field == 'description':
+        results += Recipe.query.filter(
+            Recipe.description.ilike(expr)).all()
+    if field == 'tags':
+        tag = Tag.query.filter_by(name=term).scalar()
+        if tag is not None:
+            results = tag.getAllRecipes()
+    if field == 'ingredients':
+        results += Recipe.query.filter(
+            Recipe.ingredients.ilike(expr)).all()
+    return results

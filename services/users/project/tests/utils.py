@@ -5,52 +5,6 @@ from project import db
 from flask import current_app
 
 
-def add_user(username, email, password):
-    user = User(username=username, email=email, password=password)
-    db.session.add(user)
-    db.session.commit()
-    return user
-
-
-def add_admin(username, email, password):
-    user = User(
-        username=username, email=email,
-        password=password, admin=True)
-    db.session.add(user)
-    db.session.commit()
-    return user
-
-
-def login_user(email, password):
-    with current_app.test_client() as client:
-        response = client.post(
-            '/auth/login',
-            data=json.dumps({
-                'email': email,
-                'password': password,
-            }),
-            content_type='application/json'
-        )
-        return response
-
-
-def add_recipe(owner, title, ingredients, method):
-    recipe = Recipe(
-        owner=owner, title=title, ingredients=ingredients, method=method)
-    db.session.add(recipe)
-    db.session.commit()
-    return recipe
-
-
-def register_and_login(username='test', email='test@test.com'):
-    # use username as password
-    password = username
-    add_user(username, email, password)
-    response = login_user(email, password)
-    token = json.loads(response.data.decode())['auth_token']
-    return token
-
-
 recipe_one_no_tags = {
     'title': 'curried fig',
     'description': 'fig curried with salt',
@@ -132,3 +86,59 @@ recipe_four_with_tags = {
     'tags': 'clove, candy, boiled',
     'favourite': False
 }
+
+
+def add_user(username, email, password):
+    user = User(username=username, email=email, password=password)
+    db.session.add(user)
+    db.session.commit()
+    return user
+
+
+def add_admin(username, email, password):
+    user = User(
+        username=username, email=email,
+        password=password, admin=True)
+    db.session.add(user)
+    db.session.commit()
+    return user
+
+
+def login_user(email, password):
+    with current_app.test_client() as client:
+        response = client.post(
+            '/auth/login',
+            data=json.dumps({
+                'email': email,
+                'password': password,
+            }),
+            content_type='application/json'
+        )
+        return response
+
+
+def add_recipe(owner, title, ingredients, method):
+    recipe = Recipe(
+        owner=owner, title=title, ingredients=ingredients, method=method)
+    db.session.add(recipe)
+    db.session.commit()
+    return recipe
+
+
+def register_and_login(username='test', email='test@test.com'):
+    # use username as password
+    password = username
+    add_user(username, email, password)
+    response = login_user(email, password)
+    token = json.loads(response.data.decode())['auth_token']
+    return token
+
+
+def decode_response(response):
+    code = response.status_code
+    data = {}
+    try:
+        data = json.loads(response.data.decode())
+    except Exception as e:
+        data = {'message': str(e)}
+    return code, data
