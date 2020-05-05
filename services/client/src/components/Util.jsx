@@ -10,9 +10,12 @@ export const get_recipe_url = (id)  => `${recipe_url}/${id}`
 export const get_recipes_url = (id)  => `${recipes_url}/${id}`
 export const search_recipes_url = `${search_url}`
 
-export const auth_json = {
-  'Content-Type': 'application/json',
-  Authorization: `Bearer ${window.localStorage.authToken}`
+export const auth_json = () => {
+  const a_j = {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${window.localStorage.authToken}`
+  }
+  return a_j
 }
 
 export const get_image_url_with_fallback = (filename)  => {
@@ -38,37 +41,37 @@ export const axios_options = (url, method, headers,
   return options
 }
 export const post_recipe = (form_data)  => {
-  return axios_options(recipes_url, 'post', auth_json, form_data)
+  return axios_options(recipes_url, 'post', auth_json(), form_data)
 }
 
 export const delete_recipe = (recipe_id)  => {
-  return axios_options(get_recipes_url(recipe_id), 'delete', auth_json)
+  return axios_options(get_recipes_url(recipe_id), 'delete', auth_json())
 }
 
 export const get_recipe = (id) => {
-  return axios_options(get_recipes_url(id), 'get', auth_json)
+  return axios_options(get_recipes_url(id), 'get', auth_json())
 }
 
 export const get_recipes = ()  => {
-  return axios_options(recipes_url, 'get', auth_json)
+  return axios_options(recipes_url, 'get', auth_json())
 }
 
 export const delete_tag = (recipe_id, tag)  =>  {
-  return axios_options(tag_url(recipe_id), 'delete', auth_json, {tag})
+  return axios_options(tag_url(recipe_id), 'delete', auth_json(), {tag})
 }
 
 export const add_tag = (recipe_id, tag)  =>  {
-  return axios_options(tag_url(recipe_id), 'post', auth_json, {tag})
+  return axios_options(tag_url(recipe_id), 'post', auth_json(), {tag})
 }
 
 export const get_tags = (recipe_id)  => {
-  return axios_options(get_tag_url(recipe_id), 'get', auth_json)
+  return axios_options(get_tag_url(recipe_id), 'get', auth_json())
 }
 
 export const put_recipe = (recipe_id, data)  => {
-  return axios_options(get_recipes_url(recipe_id), 'put', auth_json, data)
+  return axios_options(get_recipes_url(recipe_id), 'put', auth_json(), data)
 }
 
 export const search_recipes = (query)  => {
-  return axios_options(search_recipes_url, 'get', auth_json, undefined, query)
+  return axios_options(search_recipes_url, 'get', auth_json(), undefined, query)
 }

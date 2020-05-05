@@ -170,6 +170,12 @@ h1 {
   height: 100px;
 }
 
+#droppy > .container > aside {
+  position: absolute;
+  height: 80px;
+  top:45px;
+}
+
 #droppy {
   position:relative;
   top: 50px;

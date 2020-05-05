@@ -23,6 +23,7 @@ COPY ./entrypoint-prod.sh /usr/src/app/entrypoint-prod.sh
 COPY . /usr/src/app
 
 # copy over test images
+ADD "https://www.random.org/cgi-bin/randbyte?nbytes=10&format=h" skipcache
 COPY ./images /usr/src/app/images/
 
 # run server

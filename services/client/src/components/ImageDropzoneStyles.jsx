@@ -12,11 +12,11 @@ export const thumb = {
   marginRight: 8,
   width: 'auto',
   height: 90,
+  left: 30,
   padding: 4,
   border: 'none',
   position: 'relative',
-  left: '40%',
-  bottom: 100,
+  bottom: 15,
   filter: 'opacity(75%)'
 }
 

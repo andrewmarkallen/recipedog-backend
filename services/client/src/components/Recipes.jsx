@@ -42,12 +42,12 @@ class Recipes extends Component {
         this.searchRecipes(this.state.search)
       }
       else {
-        this.getRecipes()}
+        this.getRecipes()
+      }
     }
   }
 
   searchRecipes() {
-    console.log(queryString.parse(this.state.search))
     return axios(search_recipes((this.state.search)))
     .then((res) => {
       const ids = res.data.data
@@ -56,9 +56,6 @@ class Recipes extends Component {
         .then(res => {
           const recipe = res.data.data
           this.setState({ recipes: [...this.state.recipes, recipe] })
-          console.log('then')
-          console.log(recipe)
-          console.log(this.state.recipes)
       }
       )
         .catch(e => console.log(e))
@@ -69,7 +66,9 @@ class Recipes extends Component {
   }
 
   getRecipes() {
-    return axios(get_recipes())
+    const options = get_recipes()
+    console.log(options)
+    return axios(options)
     .then((res) => { this.setState({ recipes: res.data.data }) })
     .catch((error)  => {console.log(error)})
   }

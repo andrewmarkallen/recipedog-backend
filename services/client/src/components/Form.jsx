@@ -60,11 +60,19 @@ class Form extends Component {
   }
 
   render() {
-    if (this.props.isAuthenticated) {
-      return <Redirect to='/'/>
-    }
+
+
     return (
       <div>
+        { this.props.isAuthenticated &&
+          <Redirect to={
+            {
+              pathname: '/myrecipes',
+              state: { isAuthenticated: this.props.isAuthenticated }
+            }
+          }/>
+        }
+
         <h1 style={{'textTransform':'capitalize'}}>{this.props.formType}</h1>
         <hr/><br/>
       <form onSubmit={(event)  => this.handleUserFormSubmit(event)}>

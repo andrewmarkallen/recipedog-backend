@@ -47,7 +47,7 @@ class App extends Component {
 
   loginUser(token) {
     window.localStorage.setItem('authToken', token)
-    this.setState({ isAuthenticated: true})
+    setTimeout(() => this.setState({ isAuthenticated: true }), 100)
     this.getUsers()
   }
 
