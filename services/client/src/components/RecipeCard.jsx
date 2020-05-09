@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import {Button, Col, Jumbotron, Image, Grid, Row } from 'react-bootstrap'
+import {Button, Col, Jumbotron, Image, Grid, Glyphicon, Row } from 'react-bootstrap'
 import {  delete_tag, add_tag, put_recipe,
           get_image_url_with_fallback, get_tags } from './Util'
 import ChangesSavedModal from './ChangesSavedModal'
@@ -169,7 +169,9 @@ const RecipeCard = (props)  => {
               modid={props.id % 12 }
               id="recipecard-image"
               responsive />
-            <Button id="edit-image" onClick={handleClick}><span className="glyphicon glyphicon-pencil" aria-hidden="true"></span></Button>
+            <Button id="edit-image" onClick={handleClick}>
+              <Glyphicon glyph="pencil"></Glyphicon>
+            </Button>
           </div>
         }
         { imageEditMode &&
@@ -186,7 +188,7 @@ const RecipeCard = (props)  => {
                 setImageEditMode(false)
               }
             }}>
-              Done
+            <Glyphicon glyph="check"></Glyphicon>
             </Button>
           </div>
         }
