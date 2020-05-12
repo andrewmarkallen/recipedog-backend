@@ -7,7 +7,7 @@ export async function register(t, username, email) {
   .navigateTo(`${TEST_URL}/register`)
   .typeText('input[name="username"]', username)
   .typeText('input[name="email"]', email)
-  .typeText('input[name="password"]', 'test')
+  .typeText('input[name="password"]', 'greaterthanten')
   .click(Selector('input[type="submit"]'))
 }
 
