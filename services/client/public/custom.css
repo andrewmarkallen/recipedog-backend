@@ -347,7 +347,7 @@ img[src$="none2.png"][modid$="12"] { filter: hue-rotate(330deg); }
   padding-top: 20px !important;
 }
 
-#description, #description-editable {
+#description, #description-editable, .text-body {
   font-family: 'Roboto Slab';
   font-size: 18px;
 }

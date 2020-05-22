@@ -1,5 +1,6 @@
 import React from 'react'
 import { Carousel } from 'react-bootstrap'
+import { Link } from 'react-router-dom'
 import { get_image_url_with_fallback } from './Util'
 
 const FrontPage = (props)  => {
@@ -21,6 +22,12 @@ const FrontPage = (props)  => {
               </Carousel.Caption>
             </Carousel.Item>
           </Carousel>
+          <div id="intro">
+            <h1>What is RecipeDog?</h1>
+            <div className="text-body">
+              RecipeDog is a minimal recipe bookmarking application that lets you save your recipes in a simple format with minimal fuss. See all your recipes at a glance, with searching and tagging functionality. Click <Link to="/examples">here</Link> to see some examples and learn more.
+            </div>
+          </div>
     </div>
   )
 }
