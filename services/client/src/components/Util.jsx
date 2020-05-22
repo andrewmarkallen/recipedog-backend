@@ -75,3 +75,22 @@ export const put_recipe = (recipe_id, data)  => {
 export const search_recipes = (query)  => {
   return axios_options(search_recipes_url, 'get', auth_json(), undefined, query)
 }
+
+// A valid example recipe to use anywhere
+export const example_recipe = {
+  'cooktime': 25,
+  'date': "Sat, 14 Mar 2020 02:04:03 GMT",
+  'description': "mushroom on toast",
+  'favourite': true,
+  'id': 10,
+  'image': "56046a6319ae4e20bd67bfbf371a1783.jpg",
+  'ingredients': "mushrooms,\ntoast,\npepper",
+  'method': "toast bread\nfry mushrooms\ngrind pepper",
+  'notes': "for experts only",
+  'preptime': 45,
+  'serves': 7,
+  'title': "Mushroom Toast",
+  'url': ""
+}
+
+export const copyright = '\u00a9'

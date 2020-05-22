@@ -107,13 +107,16 @@ const NavBar = (props)  => {
 
   const[redirect, setRedirect] = useState(false)
   const[showSearch, setShowSearch] = useState(false)
+  const[brandVisible, setBrandVisible] = useState(true)
 
   const handleClick = ()  => {
     var x = document.getElementById("myTopnav")
     if (x.className === "fixed-nav-bar") {
       x.className += " responsive"
+      setBrandVisible(false)
     } else {
       x.className = "fixed-nav-bar"
+      setBrandVisible(true)
     }
   }
 
@@ -138,7 +141,9 @@ const NavBar = (props)  => {
         {props.isAuthenticated && <a href="/logout">Log Out</a>}
 
       </div>
+        { brandVisible &&
         <div id="navbar-brand" onClick={()=>setRedirect(true)}> RecipeDog</div>
+        }
         <button className="icon" onClick={()=>setShowSearch(true)} id="navbar-search">
           <i className="glyphicon glyphicon-search"></i>
         </button>

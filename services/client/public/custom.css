@@ -54,7 +54,7 @@ h1 {
   position: fixed;
   top: 0;
   width: 100%;
-  height: 50px;
+  height: auto;
   overflow: visible;
   z-index: 9000;
   text-transform: uppercase;
@@ -430,4 +430,9 @@ img[src$="none2.png"][modid$="12"] { filter: hue-rotate(330deg); }
 .search-button {
   padding-top: 25px;
   text-align: center;
+}
+
+body {
+  background-color: #eee 
+  margin-bottom: 200px;
 }
