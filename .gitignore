@@ -3,3 +3,4 @@ env
 htmlcov
 node_modules
 services/users/.DS_Store
+sendgrid.env
