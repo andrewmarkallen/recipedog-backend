@@ -7,6 +7,7 @@ jobs:
       TEST_URL: http://127.0.0.1
       REACT_APP_USERS_SERVICE_URL: http://127.0.0.1
       DISPLAY: :99.0
+      DOCKER_HOST: 127.0.0.1
     steps:
       - checkout
       - run:
@@ -17,7 +18,7 @@ jobs:
           command: 'sudo npm install -g testcafe'
       - run:
           name: launch-containers
-          command: docker-compose -f docker-compose-prod.yml up
+          command: sudo docker-compose -f docker-compose-prod.yml up
       - run:
           name: tests
           command: 'bash test.sh stage'
