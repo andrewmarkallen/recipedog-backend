@@ -2,7 +2,22 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/python:3.6.2-stretch-browsers
+      - image: circleci/node:14.3-stretch-browsers
+    environment:
+      TEST_URL: http://127.0.0.1
+      REACT_APP_USERS_SERVICE_URL: http://127.0.0.1
+      DISPLAY: :99.0
     steps:
       - checkout
-      - run: pip install -r requirements/dev.txt
+      - run:
+          name: update-npm
+          command: 'sudo npm install -g npm@5'
+      - run:
+          name: start-xvfb
+          command: sh -e /etc/init.d/xvfb start
+      - run:
+          name: sleep
+          command: sleep 3
+      - run:
+          name: tests
+          command: bash test.sh stage
