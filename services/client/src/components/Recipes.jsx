@@ -4,7 +4,6 @@ import MiniCard, {AddRecipeCard} from './MiniCard'
 import { Link } from 'react-router-dom'
 import { get_recipe, search_recipes, get_recipes } from './Util.jsx'
 import { Grid, Row } from 'react-bootstrap'
-import queryString from 'query-string'
 
 class Recipes extends Component {
 

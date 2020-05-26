@@ -94,3 +94,5 @@ export const example_recipe = {
 }
 
 export const copyright = '\u00a9'
+
+export const recaptcha_site_key = `${process.env.REACT_APP_RECAPTCHA_SITE_KEY}`.replace(/'/g, '')

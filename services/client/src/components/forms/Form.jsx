@@ -3,6 +3,8 @@ import { Redirect } from 'react-router-dom'
 import { registerFormRules, loginFormRules } from './form-rules'
 import axios from 'axios'
 import FormErrors from './FormErrors.jsx';
+import ReCAPTCHA from 'react-google-recaptcha'
+import { recaptcha_site_key } from '../Util'
 
 class Form extends Component {
   constructor (props) {
@@ -136,6 +138,7 @@ class Form extends Component {
       formRules = this.state.registerFormRules
     }
     return (
+
       <div>
         { this.props.isAuthenticated &&
           <Redirect to={
@@ -146,7 +149,6 @@ class Form extends Component {
           }/>
         }
 
-
         <h1 style={{'textTransform':'capitalize'}}>{this.props.formType}</h1>
         <hr/><br/>
       <FormErrors
@@ -154,6 +156,10 @@ class Form extends Component {
         formRules={formRules}
       />
       <form onSubmit={(event)  => this.handleUserFormSubmit(event)}>
+        <ReCAPTCHA
+          sitekey={recaptcha_site_key}
+          onChange={(v)=>{console.log(v)}}
+        />
         {this.props.formType === 'register' &&
           <div className="form-group">
             <input

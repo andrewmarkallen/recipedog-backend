@@ -10,6 +10,7 @@ services:
       args:
         - NODE_ENV=production
         - REACT_APP_USERS_SERVICE_URL=${REACT_APP_USERS_SERVICE_URL}
+        - REACT_APP_RECAPTCHA_SITE_KEY=${REACT_APP_RECAPTCHA_SITE_KEY}
     ports:
       - '3007:80'
     depends_on:

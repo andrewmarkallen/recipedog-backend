@@ -1,6 +1,5 @@
 import React from 'react'
 import {copyright} from './Util'
-import { Link } from 'react-router-dom'
 const About = ()  => (
 
 <div className="">
