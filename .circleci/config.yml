@@ -18,7 +18,9 @@ jobs:
           command: 'sudo npm install -g testcafe'
       - run:
           name: launch-containers
-          command: sudo docker-compose -f docker-compose-prod.yml up
+          command: |
+            set -x
+            sudo docker-compose -f docker-compose-prod.yml up -d
       - run:
           name: tests
           command: 'bash test.sh stage'
