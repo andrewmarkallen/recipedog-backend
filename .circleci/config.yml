@@ -14,7 +14,7 @@ jobs:
           command: 'sudo npm install -g npm@5'
       - run:
           name: install-testcafe
-          command: npm install testcafe
+          command: sudo npm install -g testcafe
       - run:
           name: sleep
           command: sleep 3
