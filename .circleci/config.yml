@@ -13,8 +13,8 @@ jobs:
           name: update-npm
           command: 'sudo npm install -g npm@5'
       - run:
-          name: start-xvfb
-          command: sh -e /etc/init.d/xvfb start
+          name: install-testcafe
+          command: npm install testcafe
       - run:
           name: sleep
           command: sleep 3
