@@ -11,13 +11,13 @@ jobs:
       - checkout
       - run:
           name: update-npm
-          command: 'sudo npm install -g npm@5'
+          command: 'sudo npm install -g npm@latest'
       - run:
           name: install-testcafe
-          command: sudo npm install -g testcafe
+          command: 'sudo npm install -g testcafe'
       - run:
-          name: sleep
-          command: sleep 3
+          name: launch-containers
+          name: docker-compose -f docker-compose-prod.yml up
       - run:
           name: tests
-          command: bash test.sh stage
+          command: 'bash test.sh stage'
