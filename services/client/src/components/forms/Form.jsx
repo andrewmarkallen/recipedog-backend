@@ -13,7 +13,8 @@ class Form extends Component {
       formData: {
         username: '',
         email: '',
-        password: ''
+        password: '',
+        response: ''
       },
       registerFormRules: registerFormRules,
       loginFormRules: loginFormRules,
@@ -35,7 +36,7 @@ class Form extends Component {
   }
   clearForm() {
     this.setState({
-      formData: {username: '', email: '', password: ''}
+      formData: {username: '', email: '', password: '', response: ''}
     })
   }
 
@@ -73,6 +74,20 @@ class Form extends Component {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail)
   }
 
+  // We should do this more robustly...however captcha responses are validated
+  // on the server side anyway so it doesn't really matter.
+  captchaValid()
+  {
+    if (this.state.formData.response !== '')
+    {
+      return true
+    }
+    else
+    {
+      return false
+    }
+  }
+
   validateForm() {
     const self = this
     // get form data
@@ -87,7 +102,7 @@ class Form extends Component {
       if (this.validateEmail(formData.email)) formRules[2].valid = true
       if (formData.password.length > 10) formRules[3].valid = true
       self.setState({registerFormRules: formRules})
-      if (self.allTrue()) self.setState({valid: true})
+      if ((self.allTrue()) && self.captchaValid()) self.setState({valid: true})
     }
     // validate login form
     if (self.props.formType === 'login') {
@@ -102,7 +117,7 @@ class Form extends Component {
   handleFormChange(event) {
     const obj = this.state.formData
     obj[event.target.name] = event.target.value
-    this.setState(obj)
+    this.setState({formData: obj})
     this.validateForm()
   }
 
@@ -120,7 +135,8 @@ class Form extends Component {
       data = {
         username: this.state.formData.username,
         email: this.state.formData.email,
-        password: this.state.formData.password
+        password: this.state.formData.password,
+        response: this.state.formData.response
       }
     }
     const url = `${process.env.REACT_APP_USERS_SERVICE_URL}/auth/${formType}`
@@ -155,11 +171,26 @@ class Form extends Component {
         formType={this.props.formType}
         formRules={formRules}
       />
+      {/*
+        for testing purposes:
+        Site key: 6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI
+        Secret key: 6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe
+      */}
       <form onSubmit={(event)  => this.handleUserFormSubmit(event)}>
-        <ReCAPTCHA
-          sitekey={recaptcha_site_key}
-          onChange={(v)=>{console.log(v)}}
-        />
+        {this.props.formType === 'register' &&
+          <ReCAPTCHA
+            sitekey={recaptcha_site_key}
+            onChange={(response) => {
+              console.log(this.state)
+              this.setState({
+                formData: {...this.state.formData, response: response}
+              })
+              this.validateForm()
+              console.log(this.state)
+
+            }}
+          />
+        }
         {this.props.formType === 'register' &&
           <div className="form-group">
             <input

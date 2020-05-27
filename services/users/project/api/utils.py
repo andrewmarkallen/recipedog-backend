@@ -1,8 +1,10 @@
 from functools import wraps
-
 from flask import request, jsonify
-
 from project.api.models import User
+from urllib.parse import urlencode
+from urllib.request import urlopen
+import json
+import os
 
 
 def authenticate(f):
@@ -54,3 +56,22 @@ def response_success(message, code, dict=None):
 
 def delete_image(filename):
     pass
+
+
+def validate_recaptcha(response):
+    URIReCaptcha = 'https://www.google.com/recaptcha/api/siteverify'
+    private_recaptcha = os.getenv('RECAPTCHA_SECRET_KEY')
+    print(private_recaptcha)
+    params = urlencode({
+        'secret': private_recaptcha,
+        'response': response,
+    })
+
+    data = urlopen(URIReCaptcha, params.encode('utf-8')).read()
+    result = json.loads(data)
+    result = {
+        'user_response': response,
+        'captcha_response': json.loads(data)
+    }
+    print(result)
+    return result

@@ -1,4 +1,5 @@
-from project.api.utils import authenticate, is_admin
+from project.api.utils import (authenticate, is_admin,
+                               validate_recaptcha, response_failure)
 from sqlalchemy import exc
 from flask import Blueprint, jsonify, request, render_template
 
