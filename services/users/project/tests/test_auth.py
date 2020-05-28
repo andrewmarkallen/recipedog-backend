@@ -5,11 +5,20 @@ from project.api.models import User
 from project.tests.base import BaseTestCase
 from project.tests.utils import add_user, login_user
 from flask import current_app
+from unittest.mock import patch, Mock
 
 
 class TestAuthBlueprint(BaseTestCase):
 
-    def test_user_registration(self):
+    def mock_validate_recaptcha_factory():
+        mock = Mock()
+        mock.return_value = {
+            'captcha_response': {'success': True}}
+        return mock
+
+    @patch('project.api.auth.validate_recaptcha',
+           new_callable=mock_validate_recaptcha_factory)
+    def test_user_registration(self, mock_validate_recaptcha):
         with self.client:
             response = self.client.post(
                 '/auth/register',
@@ -21,13 +30,16 @@ class TestAuthBlueprint(BaseTestCase):
                 content_type='application/json'
             )
             data = json.loads(response.data.decode())
+            self.assertEqual(mock_validate_recaptcha.called, True)
             self.assertTrue(data['status'] == 'success')
             self.assertTrue(data['message'] == 'Successfully registered')
             self.assertTrue(data['auth_token'])
             self.assertTrue(response.content_type == 'application/json')
             self.assertEqual(response.status_code, 201)
 
-    def test_user_registration_duplicate_email(self):
+    @patch('project.api.auth.validate_recaptcha',
+           new_callable=mock_validate_recaptcha_factory)
+    def test_user_registration_duplicate_email(self, mock_validate_recaptcha):
         add_user('test', 'test@test.com', 'test')
         with self.client:
             response = self.client.post(
@@ -46,7 +58,10 @@ class TestAuthBlueprint(BaseTestCase):
             )
             self.assertIn('fail', data['status'])
 
-    def test_user_registration_duplicate_username(self):
+    @patch('project.api.auth.validate_recaptcha',
+           new_callable=mock_validate_recaptcha_factory)
+    def test_user_registration_duplicate_username(
+            self, mock_validate_recaptcha):
         add_user('test', 'test@test.com', 'test')
         with self.client:
             response = self.client.post(
@@ -65,7 +80,9 @@ class TestAuthBlueprint(BaseTestCase):
             )
             self.assertIn('fail', data['status'])
 
-    def test_user_registration_invalid_json(self):
+    @patch('project.api.auth.validate_recaptcha',
+           new_callable=mock_validate_recaptcha_factory)
+    def test_user_registration_invalid_json(self, mock_validate_recaptcha):
         with self.client:
             response = self.client.post(
                 'auth/register',
@@ -77,7 +94,10 @@ class TestAuthBlueprint(BaseTestCase):
             self.assertIn('Invalid payload.', data['message'])
             self.assertIn('fail', data['status'])
 
-    def test_user_registration_invalid_json_keys_no_username(self):
+    @patch('project.api.auth.validate_recaptcha',
+           new_callable=mock_validate_recaptcha_factory)
+    def test_user_registration_invalid_json_keys_no_username(
+            self, mock_validate_recaptcha):
         with self.client:
             response = self.client.post(
                 'auth/register',
@@ -92,7 +112,10 @@ class TestAuthBlueprint(BaseTestCase):
             self.assertEqual('Invalid payload.', data['message'])
             self.assertIn('fail', data['status'])
 
-    def test_user_registration_invalid_json_keys_no_email(self):
+    @patch('project.api.auth.validate_recaptcha',
+           new_callable=mock_validate_recaptcha_factory)
+    def test_user_registration_invalid_json_keys_no_email(
+            self, mock_validate_recaptcha):
         with self.client:
             response = self.client.post(
                 'auth/register',
@@ -107,7 +130,10 @@ class TestAuthBlueprint(BaseTestCase):
             self.assertEqual('Invalid payload.', data['message'])
             self.assertIn('fail', data['status'])
 
-    def test_user_registration_invalid_json_keys_no_password(self):
+    @patch('project.api.auth.validate_recaptcha',
+           new_callable=mock_validate_recaptcha_factory)
+    def test_user_registration_invalid_json_keys_no_password(
+            self, mock_validate_recaptcha):
         with self.client:
             response = self.client.post(
                 'auth/register',
@@ -122,7 +148,9 @@ class TestAuthBlueprint(BaseTestCase):
             self.assertEqual('Invalid payload.', data['message'])
             self.assertIn('fail', data['status'])
 
-    def test_registered_user_login(self):
+    @patch('project.api.auth.validate_recaptcha',
+           new_callable=mock_validate_recaptcha_factory)
+    def test_registered_user_login(self, mock_validate_recaptcha):
         # with self.client:
         add_user('test', 'test@test.com', 'test')
         response = login_user('test@test.com', 'test')
@@ -133,7 +161,9 @@ class TestAuthBlueprint(BaseTestCase):
         self.assertTrue(response.content_type == 'application/json')
         self.assertEqual(response.status_code, 200)
 
-    def test_not_registered_user_login(self):
+    @patch('project.api.auth.validate_recaptcha',
+           new_callable=mock_validate_recaptcha_factory)
+    def test_not_registered_user_login(self, mock_validate_recaptcha):
         with self.client:
             response = self.client.post(
                 '/auth/login',
@@ -149,7 +179,9 @@ class TestAuthBlueprint(BaseTestCase):
             self.assertTrue(response.content_type == 'application/json')
             self.assertEqual(response.status_code, 404)
 
-    def test_valid_logout(self):
+    @patch('project.api.auth.validate_recaptcha',
+           new_callable=mock_validate_recaptcha_factory)
+    def test_valid_logout(self, mock_validate_recaptcha):
         with self.client:
             add_user('test', 'test@test.com', 'test')
             resp_login = self.client.post(
@@ -171,7 +203,9 @@ class TestAuthBlueprint(BaseTestCase):
             self.assertTrue(data['message'] == 'Successfully logged out.')
             self.assertEqual(response.status_code, 200)
 
-    def test_invalid_logout_expired_token(self):
+    @patch('project.api.auth.validate_recaptcha',
+           new_callable=mock_validate_recaptcha_factory)
+    def test_invalid_logout_expired_token(self, mock_validate_recaptcha):
         add_user('test', 'test@test.com', 'test')
         current_app.config['TOKEN_EXPIRATION_SECONDS'] = -1
         with self.client:
@@ -197,7 +231,9 @@ class TestAuthBlueprint(BaseTestCase):
             )
             self.assertEqual(response.status_code, 401)
 
-    def test_invalid_logout(self):
+    @patch('project.api.auth.validate_recaptcha',
+           new_callable=mock_validate_recaptcha_factory)
+    def test_invalid_logout(self, mock_validate_recaptcha):
         with self.client:
             response = self.client.get(
                 '/auth/logout',
@@ -210,7 +246,9 @@ class TestAuthBlueprint(BaseTestCase):
             )
             self.assertEqual(response.status_code, 401)
 
-    def test_user_status(self):
+    @patch('project.api.auth.validate_recaptcha',
+           new_callable=mock_validate_recaptcha_factory)
+    def test_user_status(self, mock_validate_recaptcha):
         add_user('test', 'test@test.com', 'test')
         with self.client:
             resp_login = self.client.post(
@@ -235,7 +273,9 @@ class TestAuthBlueprint(BaseTestCase):
             self.assertFalse(data['data']['admin'])
             self.assertEqual(response.status_code, 200)
 
-    def test_invalid_status(self):
+    @patch('project.api.auth.validate_recaptcha',
+           new_callable=mock_validate_recaptcha_factory)
+    def test_invalid_status(self, mock_validate_recaptcha):
         with self.client:
             response = self.client.get(
                 '/auth/status',
@@ -248,7 +288,9 @@ class TestAuthBlueprint(BaseTestCase):
             )
             self.assertEqual(response.status_code, 401)
 
-    def test_invalid_logout_inactive(self):
+    @patch('project.api.auth.validate_recaptcha',
+           new_callable=mock_validate_recaptcha_factory)
+    def test_invalid_logout_inactive(self, mock_validate_recaptcha):
         add_user('test', 'test@test.com', 'test')
         # update user
         user = User.query.filter_by(email='test@test.com').first()
@@ -273,7 +315,9 @@ class TestAuthBlueprint(BaseTestCase):
             self.assertTrue(data['message'] == 'Provide a valid auth token.')
             self.assertEqual(response.status_code, 401)
 
-    def test_invalid_status_inactive(self):
+    @patch('project.api.auth.validate_recaptcha',
+           new_callable=mock_validate_recaptcha_factory)
+    def test_invalid_status_inactive(self, mock_validate_recaptcha):
         add_user('test', 'test@test.com', 'test')
         # update user
         user = User.query.filter_by(email='test@test.com').first()

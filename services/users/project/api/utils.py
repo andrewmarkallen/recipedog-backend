@@ -61,7 +61,6 @@ def delete_image(filename):
 def validate_recaptcha(response):
     URIReCaptcha = 'https://www.google.com/recaptcha/api/siteverify'
     private_recaptcha = os.getenv('RECAPTCHA_SECRET_KEY')
-    print(private_recaptcha)
     params = urlencode({
         'secret': private_recaptcha,
         'response': response,
@@ -73,5 +72,4 @@ def validate_recaptcha(response):
         'user_response': response,
         'captcha_response': json.loads(data)
     }
-    print(result)
     return result
