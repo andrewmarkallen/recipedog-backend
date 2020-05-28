@@ -15,6 +15,7 @@ class User(db.Model):
     active = db.Column(db.Boolean, default=True, nullable=False)
     admin = db.Column(db.Boolean, default=False, nullable=False)
     recipes = db.relationship('Recipe', backref='users', lazy=True)
+    confirmed = db.Column(db.Boolean, default=False, nullable=False)
 
     def __init__(self, username, email, password, admin=False):
         self.username = username
