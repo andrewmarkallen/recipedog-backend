@@ -1,6 +1,7 @@
 from project.tests.base import BaseTestCase
 from project.api.utils import validate_recaptcha
 
+
 class TestUserService(BaseTestCase):
     """Tests recaptcha service."""
 

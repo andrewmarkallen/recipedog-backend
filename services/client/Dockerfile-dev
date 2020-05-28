@@ -12,7 +12,7 @@ ARG REACT_APP_RECAPTCHA_SITE_KEY
 ENV REACT_APP_RECAPTCHA_SITE_KEY $REACT_APP_RECAPTCHA_SITE_KEY
 
 # install and cache app dependencies
-ADD "https://www.random.org/cgi-bin/randbyte?nbytes=10&format=h" skipcache
+# ADD "https://www.random.org/cgi-bin/randbyte?nbytes=10&format=h" skipcache
 COPY package.json /usr/src/app
 RUN npm install
 
