@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 service nginx start
 # nginx -g "daemon off;" &
@@ -11,13 +11,14 @@ SSL_CERT=/etc/letsencrypt/live/${CERT_DOMAIN}/fullchain.pem
 SSL_CERT_KEY=/etc/letsencrypt/live/${CERT_DOMAIN}/privkey.pem
 
 
-if [[ ${CLEAR_CERTS} == 1 ]] ; then
+if [ ${CLEAR_CERTS} = 1 ]; then
   while [ ! -f /etc/letsencrypt/ready.flag ]; do
     echo "waiting for certbot to remove old certificates"
     sleep 5
   done
 fi
 
+"removing ready flag"
 rm /etc/letsencrypt/ready.flag
 
 ## Loop until these files are created
@@ -30,11 +31,14 @@ done
 echo "...certificates present."
 
 # switch to ssl
+echo "Switching to SSL by swapping nginx configuration files."
 rm /etc/nginx/conf.d/prod_http.conf
-cp /var/run/nginx/prod.conf /etc/nginx/conf.d
+cp /var/run/nginx/stage.conf /etc/nginx/conf.d
 
 trap exit TERM
 while :; do
+  echo "Restarting nginx..."
   service nginx restart
+  echo "...nginx restarted, sleeping 6 hours."
   sleep 6h
 done

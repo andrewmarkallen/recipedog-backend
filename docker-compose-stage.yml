@@ -6,13 +6,13 @@ services:
     container_name: client
     build:
       context: ./services/client
-      dockerfile: Dockerfile-prod
+      dockerfile: Dockerfile-stage
       args:
         - NODE_ENV=production
         - REACT_APP_USERS_SERVICE_URL=${REACT_APP_USERS_SERVICE_URL}
         - REACT_APP_RECAPTCHA_SITE_KEY=${REACT_APP_RECAPTCHA_SITE_KEY}
-    ports:
-      - '3007:80'
+    expose:
+      - 80
     depends_on:
       - users
     links:
@@ -22,7 +22,7 @@ services:
     container_name: nginx
     build:
       context: ./services/nginx
-      dockerfile: Dockerfile-prod
+      dockerfile: Dockerfile-stage
     environment:
       - CLEAR_CERTS=0
       - CERT_DOMAIN=${CERT_DOMAIN}
@@ -42,9 +42,9 @@ services:
     container_name: certbot
     build:
       context: ./services/certbot
-      dockerfile: Dockerfile-prod
+      dockerfile: Dockerfile-stage
     environment:
-      - STAGING=0
+      - STAGING=1
       - CLEAR_CERTS=0
       - CERT_DOMAIN=${CERT_DOMAIN}
       - CERT_EMAIL=${CERT_EMAIL}
@@ -58,15 +58,15 @@ services:
     container_name: users
     build:
       context: ./services/users
-      dockerfile: Dockerfile-prod
-    ports:
-      - 5001:5000
+      dockerfile: Dockerfile-stage
+    expose:
+      - 5000
     environment:
       - FLASK_DEBUG=0
-      - APP_SETTINGS=project.config.DevelopmentConfig
-      - DATABASE_URL=postgres://postgres:postgres@users-db:5432/users_prod
+      - APP_SETTINGS=project.config.StagingConfig
+      - DATABASE_URL=postgres://postgres:postgres@users-db:5432/users_stage
       - DATABASE_TEST_URL=postgres://postgres:postgres@users-db:5432/users_test
-      - SECRET_KEY=${SECRET_KEY}
+      - SECRET_KEY=my_precious
       - RECAPTCHA_SECRET_KEY=${RECAPTCHA_SECRET_KEY}
       - SENDGRID_API_KEY=${SENDGRID_API_KEY}
     depends_on:
@@ -81,8 +81,8 @@ services:
     build:
       context: ./services/users/project/db
       dockerfile: Dockerfile
-    ports:
-      - 5435:5432
+    expose:
+      - 5432
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
@@ -91,7 +91,7 @@ services:
     container_name: swagger
     build:
       context: ./services/swagger
-      dockerfile: Dockerfile-prod
+      dockerfile: Dockerfile-stage
     expose:
       - 8080
     environment:

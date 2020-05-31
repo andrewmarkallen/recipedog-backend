@@ -1,0 +1,527 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "0.0.1",
+    "title": "RecipeDog API",
+    "description": "Swagger spec for RecipeDog API endpoints"
+  },
+  "servers": [
+    {
+      "url": "http://192.168.99.101"
+    }
+  ],
+  "paths": {
+    "/recipes": {
+      "get": {
+        "summary": "Get all recipes belonging to user",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns a jsonified array of all recipes."
+          }
+        }
+      },
+      "post": {
+        "summary": "Submit a recipe",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "Recipe to add",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/recipe"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Recipe ID.",
+            "content": {
+              "schema": {
+                "type": "integer",
+                "format": "int64"
+              }
+            }
+          },
+          "400": {
+            "description": "Malformed recipe."
+          }
+        }
+      }
+    },
+    "/recipes/{recipe_id}/tag": {
+      "delete": {
+        "summary": "Delete a tag from a recipe",
+        "requestBody": {
+          "description": "tag",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/tag"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "recipe_id",
+            "in": "path",
+            "description": "ID of recipe to delete tags from",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tag deleted."
+          },
+          "404": {
+            "description": "Tag/recipe does not exist."
+          }
+        }
+      },
+      "post": {
+        "summary": "Add a tag to a recipe",
+        "requestBody": {
+          "description": "tag",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/tag"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "recipe_id",
+            "in": "path",
+            "description": "ID of recipe to add tags to",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Tag added."
+          },
+          "409": {
+            "description": "Tag already exists."
+          },
+          "404": {
+            "description": "Recipe does not exist."
+          }
+        }
+      }
+    },
+
+
+
+
+
+
+
+    "/recipes/{recipe_id}" : {
+      "get": {
+        "summary": "Get a recipe.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "recipe_id",
+            "in": "path",
+            "description": "ID of recipe to fetch.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success: returns recipe."
+          },
+          "403": {
+            "description": "Forbidden: recipe does not belong to user."
+          },
+          "404": {
+            "description": "No recipe with that ID exists."
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a recipe.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "recipe_id",
+            "in": "path",
+            "description": "ID of recipe to delete.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success: recipe deleted."
+          },
+          "403": {
+            "description": "Forbidden: recipe does not belong to user."
+          },
+          "404": {
+            "description": "No recipe with that ID exists."
+          }
+        }
+      },
+      "put": {
+        "summary": "Update a recipe.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "recipe_id",
+            "in": "path",
+            "description": "ID of recipe to update.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "json object of parameters to add",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/parameters"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success: recipe updated."
+          },
+          "403": {
+            "description": "Forbidden: recipe does not belong to user."
+          },
+          "404": {
+            "description": "Recipe or parameter does not exist."
+          }
+        }
+      }
+
+    },
+
+    "/recipes/{recipe_id}/tags": {
+      "get": {
+        "summary": "Get all tags for a recipe.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "recipe_id",
+            "in": "path",
+            "description": "ID of recipe to get tags of",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success: list of tags."
+          }
+        }
+      }
+    },
+
+    "/search": {
+      "get": {
+        "summary": "Search for recipes",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "fields",
+            "description": "Comma separated list of search fields to use, any out of title, tags, description and ingredients.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "mode",
+            "description": "Search mode, either any or all terms.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "search",
+            "description": "Search terms separated by spaces.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Matching recipe IDs."
+          }
+        }
+      }
+    },
+    "/users/ping": {
+      "get": {
+        "summary": "Test route",
+        "responses": {
+          "200": {
+            "description": "Will return 'pong!'"
+          }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "summary": "Returns all users",
+        "responses": {
+          "200": {
+            "description": "user object"
+          }
+        }
+      },
+      "post": {
+        "summary": "Adds a new user",
+        "requestBody": {
+          "description": "User to add",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/user-full"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User added"
+          }
+        }
+      }
+    },
+    "/users/{id}": {
+      "get": {
+        "summary": "Returns a user based on a single user ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of user to fetch",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "user object"
+          }
+        }
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "summary": "Creates a new user",
+        "requestBody": {
+          "description": "User to add",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/user-full"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "user object"
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "summary": "Logs a user in",
+        "requestBody": {
+          "description": "User to log in",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/user"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "user object"
+          }
+        }
+      }
+    },
+    "/auth/status": {
+      "get": {
+        "summary": "Returns the logged in user's status",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "user object"
+          }
+        }
+      }
+    },
+    "/auth/logout": {
+      "get": {
+        "summary": "Logs a user out",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Succesfully logged out"
+          }
+        }
+      }
+    }
+
+  },
+
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    },
+    "schemas": {
+      "user": {
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        }
+      },
+      "user-full": {
+        "properties": {
+          "username": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        }
+      },
+      "recipe": {
+        "properties": {
+          "todo": {
+            "type": "string"
+          }
+        }
+      },
+      "tag": {
+        "properties": {
+          "todo": {
+            "type": "string"
+          }
+        }
+      },
+      "parameters": {
+        "properties": {
+          "todo": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
