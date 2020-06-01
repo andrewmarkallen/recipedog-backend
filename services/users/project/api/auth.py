@@ -1,6 +1,6 @@
 from project.api.utils import (authenticate, validate_recaptcha,
                                response_failure)
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, current_app
 from sqlalchemy import exc, or_
 
 from project.api.models import User
@@ -25,9 +25,11 @@ def register():
     response = post_data.get('response')
 
     try:
-        captcha_response = (validate_recaptcha(response))['captcha_response']
-        if not captcha_response['success']:
-            return response_failure(captcha_response, 401)
+        if current_app.config.get('RECAPTCHA_VERIFICATION_ENABLED'):
+            captcha_response = (
+                validate_recaptcha(response))['captcha_response']
+            if not captcha_response['success']:
+                return response_failure(captcha_response, 401)
         # check for existing user
         user = User.query.filter(
             or_(User.username == username, User.email == email)

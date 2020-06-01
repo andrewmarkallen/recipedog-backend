@@ -11,6 +11,9 @@ ENV PATH /usr/src/app/node_modules/.bin:$PATH
 ARG REACT_APP_RECAPTCHA_SITE_KEY
 ENV REACT_APP_RECAPTCHA_SITE_KEY $REACT_APP_RECAPTCHA_SITE_KEY
 
+ARG REQUIRE_RECAPTCHA
+ENV REQUIRE_RECAPTCHA $REQUIRE_RECAPTCHA
+
 # install and cache app dependencies
 # ADD "https://www.random.org/cgi-bin/randbyte?nbytes=10&format=h" skipcache
 COPY package.json /usr/src/app

@@ -78,7 +78,7 @@ class Form extends Component {
   // on the server side anyway so it doesn't really matter.
   captchaValid()
   {
-    if (this.state.formData.response !== '')
+    if (this.state.formData.response !== '' || !process.env.REQUIRE_RECAPTCHA)
     {
       return true
     }

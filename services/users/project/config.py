@@ -11,6 +11,7 @@ class BaseConfig:
     BCRYPT_LOG_ROUNDS = 13
     TOKEN_EXPIRATION_DAYS = 30
     TOKEN_EXPIRATION_SECONDS = 0
+    RECAPTCHA_VERIFICATION_ENABLED = False
 
 
 class DevelopmentConfig(BaseConfig):
@@ -32,6 +33,7 @@ class TestingConfig(BaseConfig):
 class ProductionConfig(BaseConfig):
     """Production Configuration"""
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
+    RECAPTCHA_VERIFICATION_ENABLED = True
 
 
 class StagingConfig(BaseConfig):

@@ -16,6 +16,7 @@ services:
       - CHOKIDAR_USEPOLLING=true
       - REACT_APP_USERS_SERVICE_URL=${REACT_APP_USERS_SERVICE_URL}
       - REACT_APP_RECAPTCHA_SITE_KEY='6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'
+      - REQUIRE_RECAPTCHA=false
     depends_on:
       - users
     links:
