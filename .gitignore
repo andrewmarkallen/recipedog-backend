@@ -6,3 +6,4 @@ services/users/.DS_Store
 sendgrid.env
 recaptcha.env
 stage.env
+dev.env
