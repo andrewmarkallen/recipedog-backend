@@ -17,4 +17,4 @@ COPY swagger.json /usr/share/nginx/html/swagger.json
 COPY start.sh /start.sh
 
 RUN ["chmod", "+x", "/start.sh"]
-RUN ["/start.sh"]
+CMD ["/start.sh"]
