@@ -15,7 +15,9 @@ jobs:
           name: launch-containers
           command: |
             set -x
-            sudo docker-compose --verbose -f docker-compose-prod.yml up -d --build
+            echo $DOCKER_HOST
+            echo $DOCKER_CERT_PATH
+            docker-compose --tlsverify -H=$DOCKER_HOST --tlscacert=$DOCKER_CERT_PATH/ca.pem --tlscert=$DOCKER_CERT_PATH/cert.pem --tlskey=$DOCKER_CERT_PATH/key.pem --verbose -f docker-compose-prod.yml up -d --build
       - run:
           name: update-npm
           command: 'sudo npm install -g npm@latest'
