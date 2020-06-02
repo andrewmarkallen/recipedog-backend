@@ -15,7 +15,7 @@ jobs:
           name: launch-containers
           command: |
             set -x
-            sudo docker-compose -f docker-compose-prod.yml up -d --build
+            sudo docker-compose --verbose -f docker-compose-prod.yml up -d --build
       - run:
           name: update-npm
           command: 'sudo npm install -g npm@latest'
