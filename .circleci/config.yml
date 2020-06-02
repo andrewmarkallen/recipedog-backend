@@ -1,4 +1,4 @@
-version: 2
+version: 2 #CircleCI version
 jobs:
   build:
     docker:
@@ -10,6 +10,13 @@ jobs:
       DOCKER_HOST: 127.0.0.1
     steps:
       - checkout
+      - run:
+        name: Install Docker Compose
+        command: |
+          set -x
+          curl -L https://github.com/docker/compose/releases/download/1.25.3/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+          chmod +x /usr/local/bin/docker-compose
+      - setup_remote_docker
       - run:
           name: update-npm
           command: 'sudo npm install -g npm@latest'
