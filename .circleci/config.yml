@@ -10,25 +10,18 @@ jobs:
       DOCKER_HOST: 127.0.0.1
     steps:
       - checkout
-      # - run:
-      #     name: Install Docker Compose
-      #     command: |
-      #       set -x
-      #       curl -L https://github.com/docker/compose/releases/download/1.25.3/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
-      #       sudo mv ~/docker-compose /usr/local/bin/docker-compose
-      #       chmod +x /usr/local/bin/docker-compose
       - setup_remote_docker
+      - run:
+          name: launch-containers
+          command: |
+            set -x
+            sudo docker-compose -f docker-compose-prod.yml up -d --build
       - run:
           name: update-npm
           command: 'sudo npm install -g npm@latest'
       - run:
           name: install-testcafe
           command: 'sudo npm install -g testcafe'
-      - run:
-          name: launch-containers
-          command: |
-            set -x
-            sudo docker-compose -f docker-compose-prod.yml up -d
       - run:
           name: tests
           command: 'bash test.sh stage'
