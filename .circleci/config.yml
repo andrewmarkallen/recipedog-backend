@@ -1,5 +1,10 @@
 version: 2 #CircleCI version
 jobs:
+  deploy-job:
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "58:32:cf:bf:61:22:eb:cd:c7:0f:30:e0:af:f7:21:ff"
   build:
     docker:
       - image: circleci/node:14.3-stretch-browsers
