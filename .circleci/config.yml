@@ -11,7 +11,7 @@ jobs:
       - run:
           name: set-variables
           command: |
-            echo 'export V1=$(echo $DOCKER_HOST | sed "s#tcp://#http://#" | sed  -r "s/:[0-9]+//")' >> $BASH_ENV
+            echo 'export TEST_URL=$(echo $DOCKER_HOST | sed "s#tcp://#http://#" | sed  -r "s/:[0-9]+//")' >> $BASH_ENV
             echo 'export REACT_APP_USERS_SERVICE_URL=$TEST_URL' >> $BASH_ENV
             echo $TEST_URL
             echo $REACT_APP_USERS_SERVICE_URL
