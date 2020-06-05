@@ -4,13 +4,17 @@ jobs:
     docker:
       - image: circleci/node:14.3-stretch-browsers
     environment:
-      TEST_URL: http://127.0.0.1
-      REACT_APP_USERS_SERVICE_URL: http://127.0.0.1
       DISPLAY: :99.0
-      DOCKER_HOST: 127.0.0.1
     steps:
       - checkout
       - setup_remote_docker
+      - run:
+          name: set-variables
+          command: |
+            export TEST_URL=$(echo $DOCKER_HOST | sed 's#tcp://##' | sed  's/:.*//')
+            export REACT_APP_USERS_SERVICE_URL=$TEST_URL
+            echo $TEST_URL
+            echo $REACT_APP_USERS_SERVICE_URL
       - run:
           name: launch-containers
           command: |
@@ -18,11 +22,6 @@ jobs:
             echo $DOCKER_HOST
             echo $DOCKER_CERT_PATH
             docker-compose --tlsverify -H=$DOCKER_HOST --tlscacert=$DOCKER_CERT_PATH/ca.pem --tlscert=$DOCKER_CERT_PATH/cert.pem --tlskey=$DOCKER_CERT_PATH/key.pem --verbose -f docker-compose-prod.yml up -d --build
-      - run:
-          name: set-variables
-          command: |
-            export TEST_URL=$(echo $DOCKER_HOST | sed 's#tcp://##' | sed  's/:.*//')
-            export REACT_APP_USERS_SERVICE_URL=$TEST_URL
       - run:
           name: update-npm
           command: 'sudo npm install -g npm@latest'
