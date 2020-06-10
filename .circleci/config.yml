@@ -24,12 +24,14 @@ jobs:
             echo $TEST_URL
             echo $REACT_APP_USERS_SERVICE_URL
       - run:
-          name: launch-containers
-          command: |
-            set -x
-            echo $DOCKER_HOST
-            echo $DOCKER_CERT_PATH
-            docker-compose --tlsverify -H=$DOCKER_HOST --tlscacert=$DOCKER_CERT_PATH/ca.pem --tlscert=$DOCKER_CERT_PATH/cert.pem --tlskey=$DOCKER_CERT_PATH/key.pem -f docker-compose-dev.yml up -d --build
+          name: launch-containers-machine
+          command: docker-compose -f docker-compose-dev.yml up -d --build
+          # name: launch-containers
+          # command: |
+          #   set -x
+          #   echo $DOCKER_HOST
+          #   echo $DOCKER_CERT_PATH
+          #   docker-compose --tlsverify -H=$DOCKER_HOST --tlscacert=$DOCKER_CERT_PATH/ca.pem --tlscert=$DOCKER_CERT_PATH/cert.pem --tlskey=$DOCKER_CERT_PATH/key.pem -f docker-compose-dev.yml up -d --build
       - run:
           name: update-npm
           command: 'sudo npm install -g npm@latest'
