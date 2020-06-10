@@ -22,6 +22,9 @@ COPY ./entrypoint.sh /usr/src/app/entrypoint.sh
 # add app
 COPY . /usr/src/app
 
+# add entrypoint.sh
+COPY ./entrypoint.sh /usr/src/app/entrypoint.sh
+
 # permissions
 RUN ["chmod", "+x", "/usr/src/app/entrypoint.sh"]
 
