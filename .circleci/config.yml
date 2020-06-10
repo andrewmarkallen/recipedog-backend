@@ -2,9 +2,7 @@ version: 2 #CircleCI version
 jobs:
   build:
     machine:
-      image: ubuntu-1604:201903-01
-    # docker:
-    #   - image: circleci/node:14.3-stretch-browsers
+          image: ubuntu-1604:201903-01
     environment:
       DISPLAY: :99.0
     steps:
