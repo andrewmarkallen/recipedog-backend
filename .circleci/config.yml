@@ -34,7 +34,9 @@ jobs:
           #   docker-compose --tlsverify -H=$DOCKER_HOST --tlscacert=$DOCKER_CERT_PATH/ca.pem --tlscert=$DOCKER_CERT_PATH/cert.pem --tlskey=$DOCKER_CERT_PATH/key.pem -f docker-compose-dev.yml up -d --build
       - run:
           name: update-npm
-          command: 'sudo npm install -g npm@latest'
+          command: |
+            sudo apt-get install npm
+            'sudo npm install -g npm@latest'
       - save_cache:
           key: dependency-cache-{{ checksum "package.json" }}
           paths:
