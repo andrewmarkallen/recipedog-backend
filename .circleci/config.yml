@@ -1,4 +1,6 @@
-version: 2 #CircleCI version
+version: 2.1 #CircleCI version
+orbs:
+  node: circleci/node@3.0.0
 jobs:
   build:
     machine:
@@ -32,11 +34,14 @@ jobs:
           #   echo $DOCKER_HOST
           #   echo $DOCKER_CERT_PATH
           #   docker-compose --tlsverify -H=$DOCKER_HOST --tlscacert=$DOCKER_CERT_PATH/ca.pem --tlscert=$DOCKER_CERT_PATH/cert.pem --tlskey=$DOCKER_CERT_PATH/key.pem -f docker-compose-dev.yml up -d --build
-      - run:
-          name: update-npm
-          command: |
-            sudo apt-get install npm
-            'sudo npm install -g npm@latest'
+      - node/install:
+                install-yarn: true
+                node-version: latest
+      # - run:
+      #     name: update-npm
+      #     command: |
+      #       sudo apt-get install npm
+      #       'sudo npm install -g npm@latest'
       - save_cache:
           key: dependency-cache-{{ checksum "package.json" }}
           paths:
