@@ -33,7 +33,7 @@ echo "...certificates present."
 # switch to ssl
 echo "Switching to SSL by swapping nginx configuration files."
 rm /etc/nginx/conf.d/prod_http.conf
-cp /var/run/nginx/stage.conf /etc/nginx/conf.d
+cp /var/run/nginx/prod.conf /etc/nginx/conf.d
 
 trap exit TERM
 while :; do
