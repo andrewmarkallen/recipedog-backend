@@ -32,7 +32,7 @@ if [[ "${env}" == "dev" ]]; then
   testcafe chrome e2e
   inspect $? e2e
 else
-  testcafe chrome e2e/index.test.js
+  # testcafe chrome e2e/index.test.js
   inspect $? e2e
 fi
 

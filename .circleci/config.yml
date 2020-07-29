@@ -46,9 +46,9 @@ jobs:
           key: dependency-cache-{{ checksum "package.json" }}
           paths:
             - ./node_modules
-      - run:
-          name: install-testcafe
-          command: 'sudo npm install -g testcafe'
+      # - run:
+      #     name: install-testcafe
+      #     command: 'sudo npm install -g testcafe'
       - run:
           name: tests
           command: 'bash test.sh stage'
