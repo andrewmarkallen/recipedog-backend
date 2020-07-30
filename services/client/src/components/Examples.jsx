@@ -6,7 +6,7 @@ import { example_recipe } from './Util'
 
 const Examples = (props) => (
   <div>
-    <h1>Your recipes are all easily visible</h1>
+    <h1>Your recipes are all easily visible at a glance</h1>
     <div id="examples-cards" style={{visibility:"visible"}}>
       <Grid><Row className="show-grid">
           { [example_recipe,example_recipe,example_recipe].map((recipe, index)  => {
