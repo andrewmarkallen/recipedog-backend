@@ -1,0 +1,66 @@
+.frontpage-grid {
+  /* background-color: black; */
+
+}
+
+#frontpage-1 {
+  /* background-color: #ffefff; */
+  padding: 25px;
+  text-align: justify;
+  outline-style: solid;
+}
+#frontpage-2 {
+  /* background-color: #fedebe; */
+  text-align: center;
+  margin-bottom: 25px;
+}
+#frontpage-3 {
+  background-color: #ffefff;
+  text-align:center;
+}
+#frontpage-6 {
+  text-align:center;
+
+  /* background-color: #feeede; */
+
+}
+#frontpage-7 {
+  text-align:center;
+
+  background-color: #ffefff;
+
+}
+#frontpage-8 {
+  text-align:center;
+  margin-bottom: 20px;
+
+  /* background-color: #feeede; */
+
+}
+
+
+
+#register-button {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 28px;
+  margin-top: 28px;
+}
+
+.carousel {
+  color: #331;
+  font-size: 52px;
+  outline-style: solid;
+  background-color: white;
+  text-transform: capitalize;
+}
+
+#carouselcontainer {
+  max-width: 800px;
+}
+
+#carouselimage {
+     object-fit:cover;
+
+     /* width: 200px; */
+    height: 500px;
+}
