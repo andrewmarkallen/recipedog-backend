@@ -11,4 +11,4 @@ flask-migrate==2.1.1
 flask-bcrypt==0.7.1
 sendgrid==6.3.1
 pyjwt==2.15.0
-werkzeug==1.0.0
+werkzeug==3.1.9
